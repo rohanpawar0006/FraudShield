@@ -71,3 +71,4 @@ feature_repo/data/
 .env.local
 .env.*.local
 *.log
+scratch/

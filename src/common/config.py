@@ -49,7 +49,9 @@ class Settings:
         )
 
     # MLflow
-    MLFLOW_TRACKING_URI: str = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000")
+    MLFLOW_TRACKING_URI: str = os.getenv(
+        "MLFLOW_TRACKING_URI", "sqlite:///mlruns.db"
+    )
     MLFLOW_EXPERIMENT_NAME: str = os.getenv(
         "MLFLOW_EXPERIMENT_NAME", "fraudshield-detection"
     )
