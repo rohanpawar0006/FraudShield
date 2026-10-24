@@ -1,0 +1,32 @@
+[project]
+name = "fraudshield"
+version = "0.1.0"
+description = "Real-Time Financial Fraud Detection Platform"
+readme = "README.md"
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+    "build",
+    "dist",
+    "data",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+ignore = []
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
+pythonpath = [
+    "."
+]

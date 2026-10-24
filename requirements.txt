@@ -1,0 +1,36 @@
+# ==============================================================================
+# FraudShield Dependency Specification (Pinned Versions with Rationale)
+# Python 3.13 Verified Compatibility
+# ==============================================================================
+
+# Core Numerical & Data Processing
+numpy==2.5.4                 # High-performance vector operations and array math
+pandas==2.3.3                # Tabular data manipulation, time-series operations, and EDA
+pyarrow==25.0.1              # High-throughput Parquet storage and Feast offline store
+scikit-learn==1.9.1          # Baseline models, PR-AUC evaluation, and time splits
+
+# Primary Machine Learning & Deep Learning Models
+xgboost==3.4.1               # Gradient boosted decision trees for tabular fraud classification
+torch==2.14.1                # Deep learning tensor computations and PyG backend
+torch-geometric==2.8.1       # Graph neural network layers (GraphSAGE/GAT) for fraud rings
+
+# Feature Store & Experiment Tracking
+feast==0.67.0                # Offline/online feature store ensuring zero train-serve parity
+mlflow==3.17.2               # Experiment tracking, parameter logging, and model registry
+evidently==0.7.23            # Data and prediction drift monitoring with automated reports
+
+# API, Schema Validation & Serving
+fastapi==0.156.8             # High-performance async REST scoring API
+uvicorn[standard]==0.54.0    # Production ASGI server with uvloop/httptools
+pydantic==2.14.1             # Strict transaction validation and API schema contracts
+
+# Streaming, Storage & Database Connectors
+redis==8.1.0                 # Ultra-low-latency in-memory online store for Feast
+sqlalchemy==2.1.5            # SQL database abstraction and connection management
+psycopg2-binary==2.9.13      # PostgreSQL driver for scores, cases, and labels
+python-dotenv==1.2.4         # Twelve-factor environment configuration loader
+
+# Code Quality & Testing Suite
+ruff==0.17.1                 # Fast Python linter and formatter adhering to Rules.md
+pytest==9.1.1                # Automated testing runner for unit, integration, and parity tests
+pytest-asyncio==1.4.0        # Async test execution support for FastAPI endpoints
