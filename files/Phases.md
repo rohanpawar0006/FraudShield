@@ -4,8 +4,8 @@ Do not start Phase N+1 until Phase N's acceptance criteria pass.
 
 ## Phase 0 — Setup (Day 1)
 **Objective:** Repo, environment, docs, dataset in place.
-**Tasks:** - [ ] Create repo + folder structure - [ ] Pin dependencies; verify Python/PyG/Feast install - [ ] Docker-compose with Kafka, Redis, Postgres, MLflow - [ ] Download dataset, gitignore data - [ ] CI skeleton (ruff + pytest)
-**Acceptance:** `docker compose up` brings all infra services healthy; empty test suite passes.
+**Tasks:** - [x] Create repo + folder structure - [x] Pin dependencies; verify Python/PyG/Feast install - [x] Docker-compose with Kafka, Redis, Postgres, MLflow - [ ] Download dataset, gitignore data (User manual download in progress) - [x] CI skeleton (ruff + pytest)
+**Acceptance:** `docker compose up` brings all infra services healthy (blocked: Docker not installed on host); empty test suite passes (5/5 passed).
 **Docs:** Memory.md, README.
 
 ## Phase 1 — Data & EDA (Days 1–2)
