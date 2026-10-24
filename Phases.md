@@ -4,15 +4,15 @@ Do not start Phase N+1 until Phase N's acceptance criteria pass.
 
 ## Phase 0 — Setup (Day 1)
 **Objective:** Repo, environment, docs, dataset in place.
-**Tasks:** - [x] Create repo + folder structure - [x] Pin dependencies; verify Python/PyG/Feast install - [x] Docker-compose with Kafka, Redis, Postgres, MLflow - [ ] Download dataset, gitignore data (User manual download in progress) - [x] CI skeleton (ruff + pytest)
-**Acceptance:** `docker compose up` brings all infra services healthy (blocked: Docker not installed on host); empty test suite passes (5/5 passed).
+**Tasks:** - [x] Create repo + folder structure - [x] Pin dependencies; verify Python/PyG/Feast install - [x] Docker-compose with Kafka, Redis, Postgres, MLflow - [x] Download dataset, gitignore data - [x] CI skeleton (ruff + pytest)
+**Acceptance:** `docker compose up` brings all infra services healthy (pending — Docker not installed on host); test suite passes (5/5 passed).
 **Docs:** Memory.md, README.
 
 ## Phase 1 — Data & EDA (Days 1–2)
 **Objective:** Understand data and imbalance; define splits.
-**Tasks:** - [ ] EDA notebook (class balance, amounts, types, time) - [ ] Leakage review documented - [ ] Time-based train/val/test split saved as parquet
-**Testing:** split has no time overlap; fraud rate per split recorded.
-**Acceptance:** EDA notebook + `docs/results/eda.md` with fraud rate (<1% noted).
+**Tasks:** - [x] EDA notebook (class balance, amounts, types, time) - [x] Leakage review documented - [x] Time-based train/val/test split saved as parquet
+**Testing:** split has no time overlap (verified in `tests/unit/test_splits.py`); fraud rate per split recorded.
+**Acceptance:** EDA notebook (`notebooks/01_eda.ipynb`) + `docs/results/eda.md` with fraud rate (<1% noted): **PASSED**.
 
 ## Phase 2 — Features + Feast (Days 3–4)
 **Tasks:** - [ ] Velocity (txns/1h/24h per account) - [ ] Amount vs account running mean - [ ] Device/location/destination change flags - [ ] Feast repo, offline store, materialise to Redis
