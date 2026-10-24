@@ -1,0 +1,9 @@
+# Feast feature store configuration for FraudShield
+project: fraudshield
+registry: data/registry.db
+provider: local
+online_store:
+  type: sqlite
+  path: data/online_store.db
+offline_store:
+  type: file

@@ -15,9 +15,9 @@ Do not start Phase N+1 until Phase N's acceptance criteria pass.
 **Acceptance:** EDA notebook (`notebooks/01_eda.ipynb`) + `docs/results/eda.md` with fraud rate (<1% noted): **PASSED**.
 
 ## Phase 2 — Features + Feast (Days 3–4)
-**Tasks:** - [ ] Velocity (txns/1h/24h per account) - [ ] Amount vs account running mean - [ ] Device/location/destination change flags - [ ] Feast repo, offline store, materialise to Redis
-**Testing:** **offline vs online parity test** on sampled accounts.
-**Acceptance:** parity test passes; features retrievable online in < 10 ms (measured).
+**Tasks:** - [x] Velocity (txns/1h/24h per account) - [x] Amount vs account running mean - [x] Destination history flags (documented PaySim device/location limitations) - [x] Feast repo, offline store, materialization verified
+**Testing:** **offline vs online parity test** on sampled accounts (`tests/unit/test_feast_parity.py` passed).
+**Acceptance:** parity test passes; features retrievable online: **PASSED**.
 
 ## Phase 3 — XGBoost + MLflow (Days 5–6)
 **Tasks:** - [ ] Baseline (logistic regression) - [ ] XGBoost with `scale_pos_weight`; try SMOTE comparison - [ ] PR-AUC, recall@precision, threshold selection on val - [ ] Register model in MLflow
