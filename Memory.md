@@ -1,18 +1,18 @@
 # Memory.md — Project State (update after every meaningful task)
 
 ## Project Status
-- Current phase: **Phase 2 complete -> Ready for Phase 3 (XGBoost + MLflow)**
-- Overall completion: 30%
-- Last completed task: Phase 2 Features + Feast (Vectorized feature pipeline, Feast repository, train-serve parity test suite)
-- Current task: Phase 3 — XGBoost + MLflow
-- Next task: Baseline logistic regression, XGBoost with `scale_pos_weight`, PR-AUC & recall@precision evaluation on validation split, MLflow run tracking and model registry
+- Current phase: **Phase 3 complete -> Ready for Phase 4 (Streaming Scoring Service)**
+- Overall completion: 45%
+- Last completed task: Phase 3 Model Training + MLflow (Logistic Regression baseline, XGBoost tuning, threshold optimization, hold-out test evaluation, MLflow model registry)
+- Current task: Phase 4 — Streaming Scoring Service
+- Next task: Kafka replay producer, FastAPI streaming scoring consumer (`/score`), Postgres persistence, dead-letter handling, p50/p95 latency benchmarking
 
 ## Completed Work
 [✓] PRD, Architecture, Rules, Phases, Design, Memory drafted
 [ ] Phase 0 Setup (Repo, dependencies, compose, CI done; Docker acceptance pending on host)
 [✓] Phase 1 Data & EDA
 [✓] Phase 2 Features + Feast
-[ ] Phase 3 XGBoost + MLflow
+[✓] Phase 3 XGBoost + MLflow
 [ ] Phase 4 Streaming scoring
 [ ] Phase 5 GNN + blend
 [ ] Phase 6 Dashboard + feedback
@@ -63,20 +63,25 @@ None.
   - `feature_repo/` (Configured Feast 0.67 repo with entities, sources, and feature views)
 
 ## Recent Changes
-- Implemented `src/features/feature_pipeline.py` with point-in-time safe origin velocity (1h, 24h), amount-vs-mean ratio, time since previous transaction, and destination frequency features.
-- Generated `train_features.parquet`, `val_features.parquet`, and `test_features.parquet` with int64 and float64 dtypes.
-- Created `feature_repo/feature_store.yaml` and `feature_repo/features.py` with `nameOrig` and `nameDest` entities and feature views.
-- Verified Feast repository initialization with `feast apply`.
-- Built automated train-serve parity test suite in `tests/unit/test_feast_parity.py`.
-- Built unit test suite for rolling window boundaries, cold-start handling, and duplicate timestamps in `tests/unit/test_features.py`.
-- Authored comprehensive feature documentation in `docs/features.md`.
+- Built `src/training/data.py` with memory-optimized selective Parquet column loading, zero-leakage assertions, and deterministic `ColumnTransformer`.
+- Implemented and evaluated `src/training/train_baseline.py` (Logistic Regression with `class_weight='balanced'`; achieved Val PR-AUC 0.1455 vs ROC-AUC 0.9819).
+- Implemented `src/training/train_xgb.py` with `scale_pos_weight = 1224.25`, sequential hyperparameter tuning over 3 candidates with early stopping, and threshold optimization.
+- Selected winning candidate `xgb_medium_lr05` (depth 6, lr 0.05) with Validation PR-AUC **0.7806** (+436% lift over baseline).
+- Selected decision threshold $t = 0.99$ based on validation business trade-offs (81.93% precision, 70.74% recall, $F_1 = 0.7593$).
+- Built `src/training/evaluate_test.py` strictly decoupled from tuning; evaluated once on hold-out test set: Test PR-AUC **0.9238**, ROC-AUC **0.9994**, Precision **95.95%**, Recall **73.27%**, $F_1 = 0.8309$.
+- Mathematically investigated and documented test fraud prevalence drift (0.0816% train vs 0.4361% test) and its Bayes' theorem impact on precision.
+- Configured local SQLite MLflow tracking (`sqlite:///mlruns.db`); logged runs, metrics, parameters, PR curve plots, confusion matrices, and registered model `FraudShield-XGBoost` v1.
+- Verified model reloading and inference parity ($\Delta = 0.0$).
+- Expanded test suite to 23 tests in `tests/unit/test_training.py` (all passed).
+- Authored comprehensive documentation in `docs/results/models.md` and updated `Phases.md`.
 
 ## Next Steps
-1. Transition to Phase 3 (XGBoost + MLflow).
-2. Build baseline logistic regression model.
-3. Train XGBoost classifier with `scale_pos_weight` to address the 0.129% class imbalance.
-4. Tune decision thresholds on the validation set targeting PR-AUC and recall@precision.
-5. Track runs, metrics, parameters, and model artifacts in MLflow.
+1. Transition to Phase 4 (Streaming Scoring Service).
+2. Build Kafka transaction replay producer with configurable rate control.
+3. Build FastAPI scoring service (`/score`) integrating online feature retrieval from Feast and model inference from MLflow/saved artifacts.
+4. Implement PostgreSQL score persistence and dead-letter queue routing.
+5. Benchmark and document scoring latency (p50 and p95).
 
 ## Context for the Next AI Session
-Phase 0, Phase 1, and Phase 2 are complete. Feature parquet files are saved in `data/processed/` with 7 engineered point-in-time features. Feast feature store is configured and train-serve parity verified with unit tests. Next is Phase 3 (XGBoost + MLflow). Follow `Rules.md` strictly (PR-AUC headline metric, time-based splits only, all runs logged to MLflow, fixed seeds).
+Phase 0, Phase 1, Phase 2, and Phase 3 are complete. XGBoost model is trained, tuned, and registered in MLflow as `FraudShield-XGBoost` v1, with artifacts stored in `models/xgboost_model.json` and `models/xgboost_preprocessor.joblib`. The selected operating decision threshold is 0.99. Feast online store is configured and parity verified. Next is Phase 4 (Streaming Scoring Service: Kafka -> FastAPI -> Feast online / XGBoost -> Postgres).
+

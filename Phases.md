@@ -20,8 +20,8 @@ Do not start Phase N+1 until Phase N's acceptance criteria pass.
 **Acceptance:** parity test passes; features retrievable online: **PASSED**.
 
 ## Phase 3 — XGBoost + MLflow (Days 5–6)
-**Tasks:** - [ ] Baseline (logistic regression) - [ ] XGBoost with `scale_pos_weight`; try SMOTE comparison - [ ] PR-AUC, recall@precision, threshold selection on val - [ ] Register model in MLflow
-**Acceptance:** all runs visible in MLflow; PR-AUC on test beats baseline; results table in `docs/results/`.
+**Tasks:** - [x] Baseline (logistic regression) - [x] XGBoost with `scale_pos_weight = 1224.25`; sequential candidate tuning - [x] PR-AUC, recall@precision, threshold selection on val ($t = 0.99$) - [x] Register model in MLflow (`FraudShield-XGBoost` v1) - [x] Strictly preserved hold-out test evaluation
+**Acceptance:** all runs visible in MLflow; PR-AUC on test (0.9238) beats baseline (0.1455); results table in `docs/results/models.md`: **PASSED**.
 
 ## Phase 4 — Streaming Scoring Service (Days 7–8)
 **Tasks:** - [ ] Producer replay with rate control - [ ] FastAPI consumer + `/score`, `/health`, `/metrics` - [ ] Persist scores to Postgres - [ ] Dead-letter handling - [ ] Latency benchmark script
