@@ -57,6 +57,8 @@ data/processed/*
 !data/processed/.gitkeep
 models/*
 !models/.gitkeep
+!models/xgboost_model.json
+!models/xgboost_preprocessor.joblib
 
 # MLflow
 mlruns/
