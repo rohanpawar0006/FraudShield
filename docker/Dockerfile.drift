@@ -1,0 +1,55 @@
+# ==============================================================================
+# FraudShield Drift Monitoring & Retraining Worker Dockerfile
+# Multi-stage build with non-root security context.
+# ==============================================================================
+
+# Stage 1: Build virtual environment with dependencies
+FROM python:3.13-slim-bookworm AS builder
+
+WORKDIR /build
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+COPY docker/requirements-drift.txt .
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir -r requirements-drift.txt
+
+# Stage 2: Minimal runtime image
+FROM python:3.13-slim-bookworm AS runner
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Security: Dedicated unprivileged system user
+RUN groupadd -g 10001 appgroup && \
+    useradd -u 10001 -g appgroup -s /bin/false -m appuser
+
+# Copy virtualenv from builder
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH" \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app
+
+# Copy application source code and models
+COPY src/ /app/src/
+COPY models/ /app/models/
+COPY docs/ /app/docs/
+
+RUN chown -R appuser:appgroup /app
+
+USER appuser:appgroup
+
+CMD ["python", "-m", "src.monitoring.retrain_trigger", "--check-drift", "--check-labels"]
+

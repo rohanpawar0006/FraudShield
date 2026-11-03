@@ -1,0 +1,4 @@
+Model,PR-AUC,ROC-AUC,Precision@t,Recall@t,Recall@P0.90,Recall@P0.95,Alerts,Threshold,Alpha
+XGBoost alone,0.9239,0.9994,0.9595,0.7327,0.7891,0.7484,3059,0.99,1.0
+GNN alone,0.0031,0.4029,0.0021,0.0022,0.0,0.0,4190,0.5,0.0
+Blended,0.9239,0.9994,0.9595,0.7327,0.7891,0.7484,3059,0.99,1.0

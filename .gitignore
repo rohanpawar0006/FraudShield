@@ -65,6 +65,8 @@ mlartifacts/
 # Feast
 feature_repo/data/
 *.db
+*.db-shm
+*.db-wal
 
 # Environment variables
 .env
@@ -72,3 +74,9 @@ feature_repo/data/
 .env.*.local
 *.log
 scratch/
+
+# Drift reports (ignore timestamped generated reports, preserve recent 2)
+docs/results/drift/drift_report_*.html
+!docs/results/drift/drift_report_20261103_073959.html
+!docs/results/drift/drift_report_20261103_074000.html
+

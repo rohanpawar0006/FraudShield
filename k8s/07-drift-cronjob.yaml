@@ -1,0 +1,53 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: drift-monitor
+  namespace: fraudshield
+  labels:
+    app.kubernetes.io/name: drift-monitor
+    app.kubernetes.io/part-of: fraudshield-platform
+spec:
+  schedule: "0 0 * * *"  # Run daily at midnight UTC
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: drift-monitor
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: drift-monitor
+              image: fraudshield-drift:latest
+              imagePullPolicy: IfNotPresent
+              command:
+                - python
+                - -m
+                - src.monitoring.retrain_trigger
+                - --check-drift
+                - --check-labels
+              envFrom:
+                - configMapRef:
+                    name: fraudshield-config
+              env:
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: fraudshield-secrets
+                      key: POSTGRES_USER
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: fraudshield-secrets
+                      key: POSTGRES_PASSWORD
+              resources:
+                requests:
+                  cpu: 200m
+                  memory: 512Mi
+                limits:
+                  cpu: 500m
+                  memory: 768Mi
+

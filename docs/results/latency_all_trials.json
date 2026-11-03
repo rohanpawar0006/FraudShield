@@ -1,0 +1,151 @@
+{
+  "in_process_trials": [
+    {
+      "benchmark": "in_process_scoring_trial_1",
+      "description": "Direct ScoringEngine.score() invocation",
+      "requests_evaluated": 2000,
+      "warmup_requests": 100,
+      "conditions": {
+        "booster_n_jobs": 1,
+        "trial": 1,
+        "online_store": "Feast SQLite (local file)",
+        "runtime": "Python 3.13.14 on Windows host"
+      },
+      "mean_ms": 10.02,
+      "std_ms": 6.45,
+      "min_ms": 3.45,
+      "p50_ms": 11.0,
+      "p90_ms": 14.81,
+      "p95_ms": 16.62,
+      "p99_ms": 21.76,
+      "max_ms": 208.6
+    },
+    {
+      "benchmark": "in_process_scoring_function",
+      "description": "Direct ScoringEngine.score() invocation",
+      "requests_evaluated": 2000,
+      "warmup_requests": 100,
+      "conditions": {
+        "booster_n_jobs": 1,
+        "trial": 2,
+        "online_store": "Feast SQLite (local file)",
+        "runtime": "Python 3.13.14 on Windows host"
+      },
+      "mean_ms": 13.38,
+      "std_ms": 2.47,
+      "min_ms": 6.02,
+      "p50_ms": 12.94,
+      "p90_ms": 16.27,
+      "p95_ms": 17.8,
+      "p99_ms": 21.1,
+      "max_ms": 33.28
+    },
+    {
+      "benchmark": "in_process_scoring_trial_3",
+      "description": "Direct ScoringEngine.score() invocation",
+      "requests_evaluated": 2000,
+      "warmup_requests": 100,
+      "conditions": {
+        "booster_n_jobs": 1,
+        "trial": 3,
+        "online_store": "Feast SQLite (local file)",
+        "runtime": "Python 3.13.14 on Windows host"
+      },
+      "mean_ms": 8.04,
+      "std_ms": 4.5,
+      "min_ms": 3.67,
+      "p50_ms": 5.79,
+      "p90_ms": 14.52,
+      "p95_ms": 16.16,
+      "p99_ms": 20.68,
+      "max_ms": 29.96
+    }
+  ],
+  "testclient_trials": [
+    {
+      "benchmark": "testclient_http_trial_1",
+      "description": "FastAPI TestClient(app).post('/score') full stack",
+      "requests_evaluated": 2000,
+      "warmup_requests": 100,
+      "conditions": {
+        "booster_n_jobs": 1,
+        "trial": 1,
+        "client": "Starlette TestClient",
+        "persistence": "Asynchronous background SQLite queue"
+      },
+      "mean_ms": 11.62,
+      "std_ms": 2.06,
+      "min_ms": 8.88,
+      "p50_ms": 11.19,
+      "p90_ms": 13.75,
+      "p95_ms": 14.86,
+      "p99_ms": 17.44,
+      "max_ms": 37.02
+    },
+    {
+      "benchmark": "http_post_score_testclient",
+      "description": "FastAPI TestClient(app).post('/score') full stack",
+      "requests_evaluated": 2000,
+      "warmup_requests": 100,
+      "conditions": {
+        "booster_n_jobs": 1,
+        "trial": 2,
+        "client": "Starlette TestClient",
+        "persistence": "Asynchronous background SQLite queue"
+      },
+      "mean_ms": 11.83,
+      "std_ms": 2.12,
+      "min_ms": 8.9,
+      "p50_ms": 11.33,
+      "p90_ms": 14.75,
+      "p95_ms": 15.8,
+      "p99_ms": 18.79,
+      "max_ms": 29.78
+    },
+    {
+      "benchmark": "testclient_http_trial_3",
+      "description": "FastAPI TestClient(app).post('/score') full stack",
+      "requests_evaluated": 2000,
+      "warmup_requests": 100,
+      "conditions": {
+        "booster_n_jobs": 1,
+        "trial": 3,
+        "client": "Starlette TestClient",
+        "persistence": "Asynchronous background SQLite queue"
+      },
+      "mean_ms": 11.7,
+      "std_ms": 2.16,
+      "min_ms": 8.87,
+      "p50_ms": 11.19,
+      "p90_ms": 14.35,
+      "p95_ms": 15.39,
+      "p99_ms": 18.92,
+      "max_ms": 34.18
+    }
+  ],
+  "real_uvicorn": {
+    "benchmark": "real_uvicorn_http",
+    "description": "Real uvicorn process scored via external HTTP client over TCP localhost",
+    "requests_evaluated": 2000,
+    "warmup_requests": 100,
+    "conditions": {
+      "booster_n_jobs": 1,
+      "server": "uvicorn 0.128+",
+      "client": "httpx.Client connection pool",
+      "transport": "TCP loopback"
+    },
+    "mean_ms": 9.63,
+    "std_ms": 5.23,
+    "min_ms": 6.7,
+    "p50_ms": 9.19,
+    "p90_ms": 11.83,
+    "p95_ms": 12.96,
+    "p99_ms": 14.79,
+    "max_ms": 230.75
+  },
+  "profiling_breakdown_ms": {
+    "pydantic_validation_mean": 0.02,
+    "scoring_engine_mean": 5.19,
+    "response_serialization_mean": 0.02
+  }
+}

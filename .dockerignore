@@ -1,0 +1,33 @@
+# Git & Environment
+.git
+.gitignore
+.github
+.venv
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local database and run artifacts
+data/raw/
+*.db
+*.sqlite
+*.sqlite3
+mlruns/
+mlartifacts/
+
+# Large binaries and graph artifacts
+models/*.pt
+models/*.pth
+
+# Logs and system artifacts
+*.log
+.DS_Store
+Thumbs.db
+

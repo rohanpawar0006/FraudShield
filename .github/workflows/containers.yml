@@ -1,0 +1,77 @@
+name: Container & Kubernetes CI Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  docker-build-and-test:
+    name: Build Images & Test Compose Stack
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Validate Dockerfiles with Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: "docker/Dockerfile.*"
+          failure-threshold: error
+        continue-on-error: true
+
+      - name: Build Docker Images
+        run: |
+          docker build -f docker/Dockerfile.serving -t fraudshield-serving:latest .
+          docker build -f docker/Dockerfile.dashboard -t fraudshield-dashboard:latest .
+          docker build -f docker/Dockerfile.stream -t fraudshield-stream:latest .
+          docker build -f docker/Dockerfile.drift -t fraudshield-drift:latest .
+
+      - name: Validate Docker Compose Configuration
+        run: |
+          docker compose -f docker/docker-compose.yml config
+
+      - name: Start Core Services Stack
+        run: |
+          docker compose -f docker/docker-compose.yml --profile core up -d
+          echo "Waiting for services to become healthy..."
+          sleep 20
+          docker compose -f docker/docker-compose.yml ps
+
+      - name: Test Serving Service Health Check
+        run: |
+          curl --fail --retry 5 --retry-delay 5 --retry-connrefused http://localhost:8000/health
+
+      - name: Test Serving OpenAPI Schema Endpoint
+        run: |
+          curl --fail --retry 5 --retry-delay 5 --retry-connrefused http://localhost:8000/openapi.json
+
+      - name: Test Dashboard Health Check
+        run: |
+          curl --fail --retry 5 --retry-delay 5 --retry-connrefused http://localhost:8501/_stcore/health
+
+      - name: Teardown Compose Stack
+        if: always()
+        run: |
+          docker compose -f docker/docker-compose.yml down -v
+
+  kubernetes-manifest-validation:
+    name: Validate Kubernetes Manifests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+
+      - name: Set up Kubeval / Kubeconform
+        uses: yannh/kubeconform-action@v0.8.2
+        with:
+          files: "k8s/*.yaml"
+          schemaLocations: |
+            default
+            https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/{{ .NormalizedKubernetesVersion }}-standalone{{ .StrictSuffix }}/{{ .ResourceKind }}{{ .KindSuffix }}.json
+

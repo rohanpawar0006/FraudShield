@@ -1,0 +1,48 @@
+[
+  {
+    "timestamp": "2026-11-03T07:41:48.681966+00:00",
+    "trigger_reason": "data_drift_exceeded_threshold",
+    "champion_version": "1",
+    "candidate_version": "8",
+    "champion_pr_auc": 0.9607,
+    "candidate_pr_auc": 0.9647,
+    "delta_pr_auc": 0.004,
+    "bootstrap_ci_95": [
+      -0.0038,
+      0.0127
+    ],
+    "ci_strictly_positive": false,
+    "statistical_power_note": "Frozen gate set has N_fraud=230 (SE \u2248 0.013). Small gains (<0.015) cross zero at 95% confidence.",
+    "champion_precision": 0.994,
+    "candidate_precision": 0.994,
+    "champion_recall": 0.7174,
+    "candidate_recall": 0.7261,
+    "min_improvement_threshold": 0.001,
+    "promoted": false,
+    "decision": "REJECTED",
+    "decision_reason": "Candidate PR-AUC (0.9647) did not satisfy promotion criteria over champion (0.9607) (required delta >= +0.0010, recall 0.7261 vs 0.7174; 95% bootstrap CI on dPR-AUC: [-0.0038, +0.0127], strictly_positive=False)."
+  },
+  {
+    "timestamp": "2026-11-03T07:42:08.336251+00:00",
+    "trigger_reason": "promotion_demonstration",
+    "champion_version": "1",
+    "candidate_version": "8",
+    "champion_pr_auc": 0.3079,
+    "candidate_pr_auc": 0.9647,
+    "delta_pr_auc": 0.6568,
+    "bootstrap_ci_95": [
+      0.6022,
+      0.7095
+    ],
+    "ci_strictly_positive": true,
+    "statistical_power_note": "Frozen gate set has N_fraud=230 (SE \u2248 0.013). Small gains (<0.015) cross zero at 95% confidence.",
+    "champion_precision": 0.0,
+    "candidate_precision": 0.994,
+    "champion_recall": 0.0,
+    "candidate_recall": 0.7261,
+    "min_improvement_threshold": 0.001,
+    "promoted": true,
+    "decision": "PROMOTED",
+    "decision_reason": "Candidate PR-AUC (0.9647) improved over champion (0.3079) by >=0.0010, recall maintained (0.7261 >= 0.0000), and 95% bootstrap CI on dPR-AUC is [+0.6022, +0.7095] (strictly_positive=True)."
+  }
+]

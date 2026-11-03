@@ -56,7 +56,7 @@ def generate_synthetic_paysim(
     rng = np.random.default_rng(seed)
 
     # Time steps (representing hours, 1 to 744 ~ 30 days)
-    steps = np.sort(rng.integers(1, 100, size=num_records))
+    steps = np.sort(rng.integers(1, 744, size=num_records))
 
     # Types
     types = rng.choice(

@@ -1,0 +1,109 @@
+{
+  "timestamp": "2026-11-03T07:40:00.760227+00:00",
+  "reference_count": 8000,
+  "current_count": 4000,
+  "drift_share_threshold": 0.3,
+  "drifted_features_count": 6,
+  "share_of_drifted_features": 0.5,
+  "overall_drift_detected": true,
+  "prediction_drift": true,
+  "drift_by_feature": {
+    "amount": {
+      "metric_value": 0.5876955411141124,
+      "p_value": 0.5876955411141124,
+      "p_threshold": 0.1,
+      "threshold": 0.1,
+      "method": "Wasserstein distance (normed)",
+      "drift_detected": true
+    },
+    "oldbalanceOrg": {
+      "metric_value": 0.007359613843398252,
+      "p_value": 0.007359613843398252,
+      "p_threshold": 0.1,
+      "threshold": 0.1,
+      "method": "Wasserstein distance (normed)",
+      "drift_detected": false
+    },
+    "oldbalanceDest": {
+      "metric_value": 0.012497261692520929,
+      "p_value": 0.012497261692520929,
+      "p_threshold": 0.1,
+      "threshold": 0.1,
+      "method": "Wasserstein distance (normed)",
+      "drift_detected": false
+    },
+    "orig_amount_vs_mean": {
+      "metric_value": 0.8632263103839496,
+      "p_value": 0.8632263103839496,
+      "p_threshold": 0.1,
+      "threshold": 0.1,
+      "method": "Wasserstein distance (normed)",
+      "drift_detected": true
+    },
+    "orig_time_since_last_txn": {
+      "metric_value": 0.02209303261396805,
+      "p_value": 0.02209303261396805,
+      "p_threshold": 0.1,
+      "threshold": 0.1,
+      "method": "Wasserstein distance (normed)",
+      "drift_detected": false
+    },
+    "dest_txn_count_24h": {
+      "metric_value": 0.01961332272844605,
+      "p_value": 0.01961332272844605,
+      "p_threshold": 0.1,
+      "threshold": 0.1,
+      "method": "Wasserstein distance (normed)",
+      "drift_detected": false
+    },
+    "fraud_score": {
+      "metric_value": 0.5285602001988913,
+      "p_value": 0.5285602001988913,
+      "p_threshold": 0.1,
+      "threshold": 0.1,
+      "method": "Wasserstein distance (normed)",
+      "drift_detected": true
+    },
+    "orig_txn_count_1h": {
+      "metric_value": 0.8325546111576977,
+      "p_value": 0.8325546111576977,
+      "p_threshold": 0.1,
+      "threshold": 0.1,
+      "method": "Jensen-Shannon distance",
+      "drift_detected": true
+    },
+    "orig_txn_count_24h": {
+      "metric_value": 0.8325546111576977,
+      "p_value": 0.8325546111576977,
+      "p_threshold": 0.1,
+      "threshold": 0.1,
+      "method": "Jensen-Shannon distance",
+      "drift_detected": true
+    },
+    "orig_has_prev_txn": {
+      "metric_value": 0.007289878115835478,
+      "p_value": 0.007289878115835478,
+      "p_threshold": 0.1,
+      "threshold": 0.1,
+      "method": "Jensen-Shannon distance",
+      "drift_detected": false
+    },
+    "dest_has_prev_txn": {
+      "metric_value": 0.007590137262988289,
+      "p_value": 0.007590137262988289,
+      "p_threshold": 0.1,
+      "threshold": 0.1,
+      "method": "Jensen-Shannon distance",
+      "drift_detected": false
+    },
+    "type": {
+      "metric_value": 0.22931964085823545,
+      "p_value": 0.22931964085823545,
+      "p_threshold": 0.1,
+      "threshold": 0.1,
+      "method": "Jensen-Shannon distance",
+      "drift_detected": true
+    }
+  },
+  "report_html_path": "docs\\results\\drift\\drift_report_20261103_074000.html"
+}

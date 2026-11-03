@@ -2,11 +2,75 @@ version: "3.8"
 
 services:
   # -------------------------------------------------------------
+  # PostgreSQL (Scores, Cases, Feedback Labels, MLflow Backend)
+  # -------------------------------------------------------------
+  postgres:
+    image: postgres:15-alpine
+    container_name: fraudshield-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-fraudshield}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d fraudshield"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - fraudshield-net
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  # -------------------------------------------------------------
+  # MLflow Tracking Server & Model Registry
+  # -------------------------------------------------------------
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.11.3
+    container_name: fraudshield-mlflow
+    profiles: ["core", "full"]
+    ports:
+      - "5000:5000"
+    environment:
+      - BACKEND_STORE_URI=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-fraudshield}
+      - ARTIFACT_ROOT=/mlartifacts
+    volumes:
+      - mlflow_artifacts:/mlartifacts
+    command: >
+      mlflow server
+      --backend-store-uri postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-fraudshield}
+      --default-artifact-root /mlartifacts
+      --host 0.0.0.0
+      --port 5000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - fraudshield-net
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  # -------------------------------------------------------------
   # Kafka (KRaft mode, no ZooKeeper needed)
   # -------------------------------------------------------------
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     container_name: fraudshield-kafka
+    profiles: ["stream", "full"]
     ports:
       - "9092:9092"
       - "9094:9094"
@@ -34,70 +98,215 @@ services:
       retries: 5
     networks:
       - fraudshield-net
+    deploy:
+      resources:
+        limits:
+          memory: 768M
 
   # -------------------------------------------------------------
-  # Redis (Online Feature Store for Feast)
+  # Kafka Topic Initialization
   # -------------------------------------------------------------
-  redis:
-    image: redis:7-alpine
-    container_name: fraudshield-redis
-    ports:
-      - "6379:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
+  kafka-init:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: fraudshield-kafka-init
+    profiles: ["stream", "full"]
+    depends_on:
+      kafka:
+        condition: service_healthy
+    entrypoint: [ "/bin/sh", "-c" ]
+    command: |
+      "
+      kafka-topics --bootstrap-server kafka:29092 --list
+
+      echo 'Creating Kafka topics...'
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic transactions --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic scores --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic transactions.dlq --replication-factor 1 --partitions 1
+
+      echo 'Kafka topics successfully initialized:'
+      kafka-topics --bootstrap-server kafka:29092 --list
+      "
     networks:
       - fraudshield-net
 
   # -------------------------------------------------------------
-  # PostgreSQL (Scores, Cases, Labels, MLflow Backend)
+  # FastAPI Scoring Service (Lean - No Torch/PyG)
   # -------------------------------------------------------------
-  postgres:
-    image: postgres:15-alpine
-    container_name: fraudshield-postgres
+  serving:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.serving
+    image: fraudshield-serving:latest
+    container_name: fraudshield-serving
+    profiles: ["core", "stream", "full"]
     ports:
-      - "5432:5432"
+      - "8000:8000"
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: ${POSTGRES_DB:-fraudshield}
+      - FRAUDSHIELD_ENV=production
+      - LOG_LEVEL=INFO
+      - API_PORT=8000
+      - API_HOST=0.0.0.0
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-fraudshield}
+      - USE_SQLITE_FALLBACK=false
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - FEAST_REPO_PATH=/app/feature_repo
+      - MODEL_LOCAL_PATH=/app/models/xgboost_model.json
+      - PREPROCESSOR_LOCAL_PATH=/app/models/xgboost_preprocessor.joblib
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d fraudshield"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
-    networks:
-      - fraudshield-net
-
-  # -------------------------------------------------------------
-  # MLflow Tracking Server
-  # -------------------------------------------------------------
-  mlflow:
-    image: ghcr.io/mlflow/mlflow:v2.11.3
-    container_name: fraudshield-mlflow
-    ports:
-      - "5000:5000"
-    environment:
-      - BACKEND_STORE_URI=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-fraudshield}
-      - ARTIFACT_ROOT=/mlartifacts
-    volumes:
-      - mlflow_artifacts:/mlartifacts
-    command: >
-      mlflow server
-      --backend-store-uri postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-fraudshield}
-      --default-artifact-root /mlartifacts
-      --host 0.0.0.0
-      --port 5000
+      - ../data:/app/data:ro
+      - ../models:/app/models:ro
     depends_on:
       postgres:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
     networks:
       - fraudshield-net
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+
+  # -------------------------------------------------------------
+  # Analyst Triage Dashboard (Streamlit)
+  # -------------------------------------------------------------
+  dashboard:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dashboard
+    image: fraudshield-dashboard:latest
+    container_name: fraudshield-dashboard
+    profiles: ["core", "full"]
+    ports:
+      - "8501:8501"
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-fraudshield}
+      - USE_SQLITE_FALLBACK=false
+      - SCORING_SERVICE_URL=http://serving:8000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      serving:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8501/_stcore/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - fraudshield-net
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  # -------------------------------------------------------------
+  # Streaming Replay Producer
+  # -------------------------------------------------------------
+  producer:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.stream
+    image: fraudshield-stream:latest
+    container_name: fraudshield-producer
+    profiles: ["stream", "full"]
+    command: ["python", "-m", "src.stream.producer", "--rate", "100", "--loop"]
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - KAFKA_TOPIC_TRANSACTIONS=transactions
+    depends_on:
+      kafka:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
+    networks:
+      - fraudshield-net
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+
+  # -------------------------------------------------------------
+  # Streaming Scoring Consumer
+  # -------------------------------------------------------------
+  consumer:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.stream
+    image: fraudshield-stream:latest
+    container_name: fraudshield-consumer
+    profiles: ["stream", "full"]
+    command: ["python", "-m", "src.stream.consumer"]
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - KAFKA_TOPIC_TRANSACTIONS=transactions
+      - KAFKA_TOPIC_SCORES=scores
+      - KAFKA_TOPIC_DEAD_LETTER=transactions.dlq
+      - KAFKA_CONSUMER_GROUP=fraudshield-scoring-group
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-fraudshield}
+      - USE_SQLITE_FALLBACK=false
+    depends_on:
+      kafka:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      serving:
+        condition: service_healthy
+    networks:
+      - fraudshield-net
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  # -------------------------------------------------------------
+  # Drift Monitoring & Retraining Worker
+  # -------------------------------------------------------------
+  drift-worker:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.drift
+    image: fraudshield-drift:latest
+    container_name: fraudshield-drift-worker
+    profiles: ["full"]
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-fraudshield}
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - SCORING_SERVICE_URL=http://serving:8000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      serving:
+        condition: service_healthy
+    networks:
+      - fraudshield-net
+    deploy:
+      resources:
+        limits:
+          memory: 768M
 
 networks:
   fraudshield-net:

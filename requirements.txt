@@ -23,8 +23,10 @@ evidently==0.7.23            # Data and prediction drift monitoring with automat
 fastapi==0.156.8             # High-performance async REST scoring API
 uvicorn[standard]==0.54.0    # Production ASGI server with uvloop/httptools
 pydantic==2.14.1             # Strict transaction validation and API schema contracts
+streamlit==1.66.1            # Interactive analyst triage dashboard and feedback UI
 
 # Streaming, Storage & Database Connectors
+kafka-python-ng==2.2.3       # Kafka producer/consumer client for Python 3.13 streaming
 redis==8.1.0                 # Ultra-low-latency in-memory online store for Feast
 sqlalchemy==2.1.5            # SQL database abstraction and connection management
 psycopg2-binary==2.9.13      # PostgreSQL driver for scores, cases, and labels

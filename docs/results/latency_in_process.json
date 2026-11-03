@@ -1,0 +1,20 @@
+{
+  "benchmark": "in_process_scoring_function",
+  "description": "Direct ScoringEngine.score() invocation",
+  "requests_evaluated": 2000,
+  "warmup_requests": 100,
+  "conditions": {
+    "booster_n_jobs": 1,
+    "trial": 2,
+    "online_store": "Feast SQLite (local file)",
+    "runtime": "Python 3.13.14 on Windows host"
+  },
+  "mean_ms": 13.38,
+  "std_ms": 2.47,
+  "min_ms": 6.02,
+  "p50_ms": 12.94,
+  "p90_ms": 16.27,
+  "p95_ms": 17.8,
+  "p99_ms": 21.1,
+  "max_ms": 33.28
+}

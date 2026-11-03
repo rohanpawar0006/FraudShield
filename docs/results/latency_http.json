@@ -1,0 +1,20 @@
+{
+  "benchmark": "http_post_score_testclient",
+  "description": "FastAPI TestClient(app).post('/score') full stack",
+  "requests_evaluated": 2000,
+  "warmup_requests": 100,
+  "conditions": {
+    "booster_n_jobs": 1,
+    "trial": 2,
+    "client": "Starlette TestClient",
+    "persistence": "Asynchronous background SQLite queue"
+  },
+  "mean_ms": 11.83,
+  "std_ms": 2.12,
+  "min_ms": 8.9,
+  "p50_ms": 11.33,
+  "p90_ms": 14.75,
+  "p95_ms": 15.8,
+  "p99_ms": 18.79,
+  "max_ms": 29.78
+}

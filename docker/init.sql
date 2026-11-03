@@ -27,15 +27,20 @@ CREATE INDEX IF NOT EXISTS idx_scores_txn_id ON scores (txn_id);
 
 CREATE TABLE IF NOT EXISTS cases (
     txn_id VARCHAR(64) PRIMARY KEY REFERENCES transactions(txn_id) ON DELETE CASCADE,
-    status VARCHAR(32) NOT NULL DEFAULT 'New', -- New, In review, Confirmed fraud, False positive
+    status VARCHAR(32) NOT NULL DEFAULT 'New', -- New, Under Review, Confirmed Fraud, False Positive
     assigned_to VARCHAR(64),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE INDEX IF NOT EXISTS idx_cases_status ON cases (status);
+
 CREATE TABLE IF NOT EXISTS labels (
     id SERIAL PRIMARY KEY,
     txn_id VARCHAR(64) REFERENCES transactions(txn_id) ON DELETE CASCADE,
-    label INTEGER NOT NULL, -- 1 = Fraud, 0 = Legitimate
+    label INTEGER NOT NULL, -- 1 = Fraud, 0 = Legitimate, -1 = Under Review
+    disposition VARCHAR(32) NOT NULL, -- Confirmed Fraud, False Positive, Under Review
+    previous_disposition VARCHAR(32),
+    analyst VARCHAR(64) NOT NULL,
     comment TEXT,
     labeled_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

@@ -1,0 +1,428 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "FraudShield Real-Time Risk Scoring API",
+    "description": "High-throughput streaming fraud detection scoring service backed by Feast and XGBoost.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/score": {
+      "post": {
+        "summary": "Score a financial transaction for fraud risk",
+        "description": "Score an incoming transaction against registered XGBoost model and Feast features.\n\nPersists the transaction and resulting score to PostgreSQL off the critical request path.",
+        "operationId": "score_transaction_score_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransactionPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScoreResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health check reporting status of individual subsystems",
+        "description": "Report individual health status of model, Feast store, and database.",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics": {
+      "get": {
+        "summary": "Operational metrics including rolling p50/p95 latency and throughput",
+        "description": "Return live operational telemetry and latency percentiles.",
+        "operationId": "get_metrics_metrics_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetricsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/reload-model": {
+      "post": {
+        "summary": "Reload model and preprocessor from latest champion (admin/dev-only)",
+        "description": "Reload the registered champion model and preprocessor without service restart.\n\nProtected in production via X-Admin-Key header; accessible in development.",
+        "operationId": "reload_model_admin_reload_model_post",
+        "parameters": [
+          {
+            "name": "X-Admin-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Reload Model Admin Reload Model Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Overall service status (healthy, degraded)"
+          },
+          "model_loaded": {
+            "type": "boolean",
+            "title": "Model Loaded",
+            "description": "Whether XGBoost model is loaded in memory"
+          },
+          "feast_reachable": {
+            "type": "boolean",
+            "title": "Feast Reachable",
+            "description": "Whether Feast feature store is accessible"
+          },
+          "db_reachable": {
+            "type": "boolean",
+            "title": "Db Reachable",
+            "description": "Whether persistence database backend is accessible"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "model_loaded",
+          "feast_reachable",
+          "db_reachable"
+        ],
+        "title": "HealthResponse",
+        "description": "Health status contract detailing individual subsystem availability."
+      },
+      "MetricsResponse": {
+        "properties": {
+          "request_count": {
+            "type": "integer",
+            "title": "Request Count",
+            "description": "Total scoring requests processed"
+          },
+          "error_count": {
+            "type": "integer",
+            "title": "Error Count",
+            "description": "Total unhandled or client errors"
+          },
+          "feature_fallback_count": {
+            "type": "integer",
+            "title": "Feature Fallback Count",
+            "description": "Count of transactions requiring Feast feature defaults"
+          },
+          "gnn_fallback_count": {
+            "type": "integer",
+            "title": "Gnn Fallback Count",
+            "description": "Count of transactions requiring GNN fallback to XGBoost-only",
+            "default": 0
+          },
+          "throughput_rps": {
+            "type": "number",
+            "title": "Throughput Rps",
+            "description": "Current request processing throughput (requests/sec)"
+          },
+          "p50_latency_ms": {
+            "type": "number",
+            "title": "P50 Latency Ms",
+            "description": "50th percentile (median) latency over rolling window"
+          },
+          "p95_latency_ms": {
+            "type": "number",
+            "title": "P95 Latency Ms",
+            "description": "95th percentile latency over rolling window"
+          },
+          "window_size": {
+            "type": "integer",
+            "title": "Window Size",
+            "description": "Number of samples in the rolling latency window"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_count",
+          "error_count",
+          "feature_fallback_count",
+          "throughput_rps",
+          "p50_latency_ms",
+          "p95_latency_ms",
+          "window_size"
+        ],
+        "title": "MetricsResponse",
+        "description": "Operational telemetry contract reporting request volume and latency percentiles."
+      },
+      "ScoreResponse": {
+        "properties": {
+          "transaction_id": {
+            "type": "string",
+            "title": "Transaction Id",
+            "description": "Unique transaction ID"
+          },
+          "fraud_score": {
+            "type": "number",
+            "title": "Fraud Score",
+            "description": "Predicted fraud probability in [0.0, 1.0]"
+          },
+          "is_alert": {
+            "type": "boolean",
+            "title": "Is Alert",
+            "description": "True if fraud_score meets or exceeds configured decision threshold"
+          },
+          "latency_ms": {
+            "type": "number",
+            "title": "Latency Ms",
+            "description": "End-to-end scoring latency in milliseconds"
+          },
+          "feature_fallback": {
+            "type": "boolean",
+            "title": "Feature Fallback",
+            "description": "True if Feast lookup missed and safe default features were applied"
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version",
+            "description": "Model registry version or identifier"
+          },
+          "threshold": {
+            "type": "number",
+            "title": "Threshold",
+            "description": "Decision threshold applied for alerting"
+          },
+          "xgb_score": {
+            "type": "number",
+            "title": "Xgb Score",
+            "description": "Raw tabular XGBoost risk probability"
+          },
+          "gnn_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gnn Score",
+            "description": "Precomputed or online GNN risk score"
+          },
+          "blend_score": {
+            "type": "number",
+            "title": "Blend Score",
+            "description": "Blended fraud score combining XGBoost and GNN"
+          },
+          "blend_used": {
+            "type": "boolean",
+            "title": "Blend Used",
+            "description": "True if GNN risk score was found and blended into decision",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "transaction_id",
+          "fraud_score",
+          "is_alert",
+          "latency_ms",
+          "feature_fallback",
+          "model_version",
+          "threshold",
+          "xgb_score",
+          "blend_score"
+        ],
+        "title": "ScoreResponse",
+        "description": "Output risk prediction contract for a scored transaction."
+      },
+      "TransactionPayload": {
+        "properties": {
+          "transaction_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Transaction Id",
+            "description": "Unique transaction identifier"
+          },
+          "step": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Step",
+            "description": "Chronological simulation step/hour",
+            "default": 1
+          },
+          "type": {
+            "type": "string",
+            "title": "Type",
+            "description": "Transaction type (CASH_IN, CASH_OUT, DEBIT, PAYMENT, TRANSFER)"
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Amount",
+            "description": "Transaction amount in currency units (must be non-negative)"
+          },
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Account Id",
+            "description": "Originating customer account identifier"
+          },
+          "oldbalanceOrg": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Oldbalanceorg",
+            "description": "Origin account balance prior to transaction execution",
+            "default": 0.0
+          },
+          "dest_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Dest Id",
+            "description": "Destination payee/merchant account identifier"
+          },
+          "oldbalanceDest": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Oldbalancedest",
+            "description": "Destination account balance prior to transaction arrival",
+            "default": 0.0
+          }
+        },
+        "type": "object",
+        "required": [
+          "transaction_id",
+          "type",
+          "amount",
+          "account_id",
+          "dest_id"
+        ],
+        "title": "TransactionPayload",
+        "description": "Input payload for scoring a financial transaction.\n\nValidates schema types, non-negative amounts, and recognized payment types."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
