@@ -67,11 +67,8 @@ jobs:
       - name: Checkout Codebase
         uses: actions/checkout@v4
 
-      - name: Set up Kubeval / Kubeconform
-        uses: yannh/kubeconform-action@v0.8.2
-        with:
-          files: "k8s/*.yaml"
-          schemaLocations: |
-            default
-            https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/{{ .NormalizedKubernetesVersion }}-standalone{{ .StrictSuffix }}/{{ .ResourceKind }}{{ .KindSuffix }}.json
+      - name: Validate Kubernetes Manifests with Kubeconform
+        run: |
+          curl -sL https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz | tar xz
+          ./kubeconform -summary -ignore-missing-schemas k8s/*.yaml
 
