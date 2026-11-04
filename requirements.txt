@@ -8,6 +8,7 @@ numpy==2.5.4                 # High-performance vector operations and array math
 pandas==2.3.3                # Tabular data manipulation, time-series operations, and EDA
 pyarrow==25.0.1              # High-throughput Parquet storage and Feast offline store
 scikit-learn==1.9.1          # Baseline models, PR-AUC evaluation, and time splits
+matplotlib>=3.8.0            # Visualization and Tree SHAP attribution charts for dashboard
 
 # Primary Machine Learning & Deep Learning Models
 xgboost==3.4.1               # Gradient boosted decision trees for tabular fraud classification

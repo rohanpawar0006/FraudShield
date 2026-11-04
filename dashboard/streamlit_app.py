@@ -88,6 +88,70 @@ def get_account_graph_context(
     }
 
 
+def seed_sample_alerts() -> int:
+    """Seed demo alerts into database for demonstration and cloud environments."""
+    import time
+
+    from src.common.db import db_manager
+    from src.serving.schemas import TransactionPayload
+    from src.serving.scoring import ScoringEngine
+
+    sample_txns = [
+        {"step": 379, "type": "TRANSFER", "amount": 1250000.0, "nameOrig": "C1729268548", "oldbalanceOrg": 1250000.0, "nameDest": "C1519453344", "oldbalanceDest": 0.0},
+        {"step": 380, "type": "CASH_OUT", "amount": 1250000.0, "nameOrig": "C1519453344", "oldbalanceOrg": 1250000.0, "nameDest": "C961243143", "oldbalanceDest": 45000.0},
+        {"step": 381, "type": "TRANSFER", "amount": 7539165.76, "nameOrig": "C64015154", "oldbalanceOrg": 7539165.76, "nameDest": "C1744865437", "oldbalanceDest": 0.0},
+        {"step": 382, "type": "CASH_OUT", "amount": 4417191.86, "nameOrig": "C790582807", "oldbalanceOrg": 4417191.86, "nameDest": "C690378183", "oldbalanceDest": 12000.0},
+        {"step": 383, "type": "TRANSFER", "amount": 157277.0, "nameOrig": "C1601578028", "oldbalanceOrg": 157277.0, "nameDest": "C49314331", "oldbalanceDest": 0.0},
+        {"step": 384, "type": "CASH_OUT", "amount": 176626.77, "nameOrig": "C2077002700", "oldbalanceOrg": 176626.77, "nameDest": "C1412132938", "oldbalanceDest": 0.0},
+        {"step": 385, "type": "PAYMENT", "amount": 1420.50, "nameOrig": "C1234567890", "oldbalanceOrg": 5400.0, "nameDest": "M987654321", "oldbalanceDest": 0.0},
+        {"step": 386, "type": "CASH_IN", "amount": 50000.0, "nameOrig": "C9988776655", "oldbalanceOrg": 12000.0, "nameDest": "C1122334455", "oldbalanceDest": 65000.0},
+        {"step": 387, "type": "PAYMENT", "amount": 89.99, "nameOrig": "C5544332211", "oldbalanceOrg": 2300.0, "nameDest": "M1122334455", "oldbalanceDest": 0.0},
+        {"step": 388, "type": "TRANSFER", "amount": 438859.10, "nameOrig": "C1632082016", "oldbalanceOrg": 438859.10, "nameDest": "C1877779310", "oldbalanceDest": 0.0},
+        {"step": 389, "type": "CASH_OUT", "amount": 438859.10, "nameOrig": "C1877779310", "oldbalanceOrg": 438859.10, "nameDest": "C2233445566", "oldbalanceDest": 15000.0},
+        {"step": 390, "type": "DEBIT", "amount": 320.0, "nameOrig": "C4433221100", "oldbalanceOrg": 4500.0, "nameDest": "C6655443322", "oldbalanceDest": 18000.0},
+        {"step": 391, "type": "PAYMENT", "amount": 1250.0, "nameOrig": "C7766554433", "oldbalanceOrg": 8900.0, "nameDest": "M3344556677", "oldbalanceDest": 0.0},
+        {"step": 392, "type": "TRANSFER", "amount": 190662.70, "nameOrig": "C1569153511", "oldbalanceOrg": 190662.70, "nameDest": "C1637089162", "oldbalanceDest": 0.0},
+        {"step": 393, "type": "CASH_OUT", "amount": 190662.70, "nameOrig": "C1637089162", "oldbalanceOrg": 190662.70, "nameDest": "C9988112233", "oldbalanceDest": 8200.0},
+    ]
+
+    try:
+        engine = ScoringEngine()
+        seeded = 0
+        for i, item in enumerate(sample_txns):
+            txn_id = f"demo_txn_{i:04d}"
+            payload = TransactionPayload(
+                transaction_id=txn_id,
+                step=item["step"],
+                type=item["type"],
+                amount=item["amount"],
+                nameOrig=item["nameOrig"],
+                oldbalanceOrg=item["oldbalanceOrg"],
+                nameDest=item["nameDest"],
+                oldbalanceDest=item["oldbalanceDest"],
+            )
+            resp = engine.score(payload)
+            db_manager.save_transaction_and_score(
+                txn_id=payload.txn_id,
+                account_id=payload.nameOrig,
+                dest_id=payload.nameDest,
+                amount=payload.amount,
+                txn_type=payload.type,
+                ts=None,
+                raw_payload=payload.model_dump(),
+                xgb_score=resp.xgb_score,
+                gnn_score=resp.gnn_score,
+                blended_score=resp.fraud_score,
+                model_version=resp.model_version,
+                latency_ms=resp.latency_ms,
+            )
+            seeded += 1
+        time.sleep(0.3)
+        return seeded
+    except Exception as e:
+        st.sidebar.caption(f"Demo seeding note: {e}")
+        return 0
+
+
 # Initialize session state
 if "current_page" not in st.session_state:
     st.session_state.current_page = "Alerts"
@@ -95,6 +159,20 @@ if "selected_txn" not in st.session_state:
     st.session_state.selected_txn = None
 if "alerts_page" not in st.session_state:
     st.session_state.alerts_page = 0
+
+# Ensure database has alerts in cloud/demo environments
+from src.common.db import db_manager  # noqa: E402
+
+try:
+    conn = db_manager.get_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT COUNT(*) FROM scores")
+    current_score_count = cur.fetchone()[0]
+    conn.close()
+    if current_score_count == 0:
+        seed_sample_alerts()
+except Exception:
+    pass
 
 
 # Sidebar Navigation
@@ -112,6 +190,19 @@ nav_choice = st.sidebar.radio(
     ),
 )
 st.session_state.current_page = nav_choice
+
+st.sidebar.markdown("---")
+if st.sidebar.button("⚡ Reload Sample Alerts"):
+    with st.spinner("Populating sample alerts..."):
+        seed_sample_alerts()
+    st.sidebar.success("Sample alerts refreshed!")
+    st.rerun()
+
+st.sidebar.markdown("---")
+st.sidebar.markdown("🔗 **Quick Links**")
+st.sidebar.markdown("- [GitHub Repository](https://github.com/rohanpawar0006/FraudShield)")
+st.sidebar.markdown("- [API Documentation](https://github.com/rohanpawar0006/FraudShield/blob/main/docs/api/API.md)")
+st.sidebar.markdown("- [Model Performance](https://github.com/rohanpawar0006/FraudShield/blob/main/docs/results/RESULTS.md)")
 
 
 # =============================================================================

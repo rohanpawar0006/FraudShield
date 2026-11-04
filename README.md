@@ -1,10 +1,14 @@
 # FraudShield — Enterprise Real-Time Fraud Detection & MLOps Platform
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://fraudshield06.streamlit.app/)
 [![Python 3.13](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/downloads/)
-[![Tests Passing](https://img.shields.io/badge/tests-63%20passed-brightgreen.svg)](tests/)
+[![Tests Passing](https://img.shields.io/badge/tests-72%20passed-brightgreen.svg)](tests/)
 [![PR-AUC](https://img.shields.io/badge/Hold--Out%20PR--AUC-0.9239-success.svg)](docs/results/RESULTS.md)
 [![FastAPI](https://img.shields.io/badge/FastAPI-Serving%20Sub--20ms-teal.svg)](docs/api/API.md)
 [![Code Style: Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+
+> 🚀 **Live Interactive Analyst Console**: [fraudshield06.streamlit.app](https://fraudshield06.streamlit.app/)  
+> 📦 **GitHub Repository**: [github.com/rohanpawar0006/FraudShield](https://github.com/rohanpawar0006/FraudShield)
 
 **FraudShield** is a production-grade, end-to-end real-time financial fraud detection and operations platform. It couples tabular gradient-boosted decision trees (XGBoost) and graph topology signals (PyTorch Geometric) over a low-latency streaming pipeline (Kafka, FastAPI, Feast, PostgreSQL/SQLite) to achieve **PR-AUC 0.9239** and **95.95% Precision at 73.27% Recall** on strictly held-out PaySim financial data. Engineered with zero future data leakage, FraudShield delivers sub-20ms p95 HTTP scoring, an interactive Streamlit analyst dashboard with human-in-the-loop feedback loops, automated Evidently drift monitoring, and MLflow model registry promotion gates that retrain and hot-reload champion models with zero downtime.
 
@@ -87,7 +91,7 @@ FraudShield is designed to bootstrap completely from a fresh repository clone wi
 ### 2. Virtual Environment Setup
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/FraudShield.git
+git clone https://github.com/rohanpawar0006/FraudShield.git
 cd FraudShield
 
 # Create virtual environment
@@ -137,13 +141,15 @@ uvicorn src.serving.app:app --host 0.0.0.0 --port 8000
 #### B. Launch the Streamlit Fraud Analyst Dashboard
 In a separate terminal:
 ```bash
-streamlit run src/dashboard/app.py --server.port 8501
+streamlit run dashboard/streamlit_app.py --server.port 8501
+# Or from repository root:
+streamlit run streamlit_app.py --server.port 8501
 ```
-Navigate to [http://localhost:8501](http://localhost:8501) to explore real-time alert triage, inspect account network rings, and submit analyst ground-truth labels.
+Navigate to [http://localhost:8501](http://localhost:8501) (or open the live deployment at [fraudshield06.streamlit.app](https://fraudshield06.streamlit.app/)) to explore real-time alert triage, inspect account network rings, and submit analyst ground-truth labels.
 
 #### C. Run Test Suite & Serving Benchmark
 ```bash
-# Run all 63 unit, integration, and parity tests
+# Run all 72 unit, integration, and container parity tests
 pytest -q
 
 # Run real-time serving replay benchmark (2,000 hold-out transactions)
@@ -225,15 +231,15 @@ FraudShield maintains complete honesty regarding what was verified on the host m
 
 | Component / Workflow | Verification Status | Host Environment Details |
 |---|---|---|
-| **Full Python Pipeline (Phases 0-7)** | **VERIFIED LOCALLY** | 63 tests passing on Python 3.13.14 via pytest |
+| **Full Python Pipeline (Phases 0-7)** | **VERIFIED LOCALLY** | 72 tests passing on Python 3.13.14 via pytest |
 | **FastAPI REST API (`/score`, `/health`)** | **VERIFIED LOCALLY** | Verified via `TestClient` and in-process benchmarks (p50 12.8 ms) |
 | **Feast Feature Store** | **VERIFIED LOCALLY** | Tested on SQLite online store (`feature_repo/data/online_store.db`) |
 | **MLflow Tracking & Registry** | **VERIFIED LOCALLY** | Logged to local SQLite backend (`sqlite:///mlruns.db`) |
-| **Streamlit Analyst UI** | **VERIFIED LOCALLY** | Schema parity and triage actions verified on SQLite fallback |
+| **Streamlit Analyst UI** | **VERIFIED LOCALLY & CLOUD** | Live at [fraudshield06.streamlit.app](https://fraudshield06.streamlit.app/); auto-seeded triage console |
 | **Evidently Drift Pipeline** | **VERIFIED LOCALLY** | Verified with Wasserstein distance & KS tests |
-| **Phase 8 Container Infrastructure** | **WRITTEN, STATICALLY VALIDATED, NOT EXECUTED LOCALLY** | Validated Dockerfiles (pinned Python 3.13-slim) & compose syntax; Docker daemon not installed on Windows host |
-| **Phase 8 Kubernetes Manifests** | **WRITTEN, STATICALLY VALIDATED, NOT EXECUTED LOCALLY** | Validated declarative syntax (k8s/*.yaml); Minikube / kubectl not installed on Windows host |
-| **Kafka Live Broker Replay** | **STATICALLY VALIDATED** | Streaming consumer and DLQ logic unit-tested; broker runs in compose |
+| **PostgreSQL Runtime (Containerized)** | **VERIFIED LIVE IN CONTAINER** | Verified on Docker Desktop WSL2 (healthy, all 4 tables initialized, CRUD & persistence PASS) |
+| **Kafka Broker & Topics (KRaft)** | **VERIFIED LIVE IN CONTAINER** | Verified on Docker Desktop WSL2 (healthy, KRaft broker, topics initialized, produce/consume PASS) |
+| **Kubernetes Manifests (Phase 8)** | **STATICALLY VALIDATED & TESTED** | Validated declarative syntax (`k8s/*.yaml`), Kubeconform schema checks, and unit tests in `test_containers.py` |
 
 ---
 
