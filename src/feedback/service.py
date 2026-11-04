@@ -52,8 +52,9 @@ def list_alerts(
     conn = db_manager.get_connection()
     ph = _get_placeholder(db_manager.backend)
 
-    conditions = ["s.blended_score >= " + ph]
-    params: List[Any] = [settings.DECISION_THRESHOLD]
+    effective_min_score = min_score if min_score is not None else settings.DECISION_THRESHOLD
+    conditions = [f"s.blended_score >= {ph}"]
+    params: List[Any] = [float(effective_min_score)]
 
     if status:
         if status.lower() == "new":
@@ -62,10 +63,6 @@ def list_alerts(
         else:
             conditions.append(f"c.status = {ph}")
             params.append(status)
-
-    if min_score is not None:
-        conditions.append(f"s.blended_score >= {ph}")
-        params.append(float(min_score))
 
     if max_score is not None:
         conditions.append(f"s.blended_score <= {ph}")

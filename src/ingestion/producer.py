@@ -26,6 +26,7 @@ def run_replay_producer(
     bootstrap_servers: Optional[str] = None,
     channel: Optional[StreamingChannel] = None,
     use_fallback: bool = False,
+    loop: bool = False,
 ) -> int:
     """Stream transactions from hold-out split into Kafka topic in chronological time order.
 
@@ -88,40 +89,45 @@ def run_replay_producer(
     t_start = time.perf_counter()
     interval = (1.0 / rate) if rate > 0 else 0.0
 
-    for idx, row in df.iterrows():
-        txn_id = f"txn_holdout_{int(row['step']):04d}_{idx:07d}"
-        payload = {
-            "txn_id": txn_id,
-            "transaction_id": txn_id,
-            "step": int(row["step"]),
-            "type": str(row["type"]),
-            "amount": float(row["amount"]),
-            "nameOrig": str(row["nameOrig"]),
-            "account_id": str(row["nameOrig"]),
-            "oldbalanceOrg": float(row["oldbalanceOrg"]),
-            "nameDest": str(row["nameDest"]),
-            "dest_id": str(row["nameDest"]),
-            "oldbalanceDest": float(row["oldbalanceDest"]),
-            "event_timestamp": str(row["event_timestamp"]),
-            "ground_truth_label": int(row["isFraud"]),
-        }
+    while True:
+        for idx, row in df.iterrows():
+            txn_id = f"txn_holdout_{int(row['step']):04d}_{idx:07d}"
+            payload = {
+                "txn_id": txn_id,
+                "transaction_id": txn_id,
+                "step": int(row["step"]),
+                "type": str(row["type"]),
+                "amount": float(row["amount"]),
+                "nameOrig": str(row["nameOrig"]),
+                "account_id": str(row["nameOrig"]),
+                "oldbalanceOrg": float(row["oldbalanceOrg"]),
+                "nameDest": str(row["nameDest"]),
+                "dest_id": str(row["nameDest"]),
+                "oldbalanceDest": float(row["oldbalanceDest"]),
+                "event_timestamp": str(row["event_timestamp"]),
+                "ground_truth_label": int(row["isFraud"]),
+            }
 
-        success = streaming_chan.publish(topic, payload)
-        if success:
-            published_count += 1
+            success = streaming_chan.publish(topic, payload)
+            if success:
+                published_count += 1
 
-        if (idx + 1) % 1000 == 0 or (idx + 1) == total_records:
-            elapsed = max(time.perf_counter() - t_start, 1e-4)
-            current_rate = published_count / elapsed
-            logger.info(
-                "Replayed %d/%d transactions (Throughput: %.1f eps)",
-                published_count,
-                total_records,
-                current_rate,
-            )
+            if (idx + 1) % 1000 == 0 or (idx + 1) == total_records:
+                elapsed = max(time.perf_counter() - t_start, 1e-4)
+                current_rate = published_count / elapsed
+                logger.info(
+                    "Replayed %d/%d transactions (Throughput: %.1f eps)",
+                    published_count,
+                    total_records,
+                    current_rate,
+                )
 
-        if interval > 0:
-            time.sleep(interval)
+            if interval > 0:
+                time.sleep(interval)
+
+        if not loop:
+            break
+        logger.info("Replay loop completed. Looping from start...")
 
     total_elapsed = max(time.perf_counter() - t_start, 1e-4)
     logger.info(
@@ -172,6 +178,11 @@ def main() -> None:
         action="store_true",
         help="Force in-memory queue fallback without requiring Docker/Kafka",
     )
+    parser.add_argument(
+        "--loop",
+        action="store_true",
+        help="Continuously loop replay over hold-out transactions",
+    )
 
     args = parser.parse_args()
 
@@ -183,6 +194,7 @@ def main() -> None:
             limit=args.limit,
             bootstrap_servers=args.bootstrap_servers,
             use_fallback=args.use_fallback,
+            loop=args.loop,
         )
     except Exception as e:
         logger.error("Producer encountered fatal error: %s", e, exc_info=True)

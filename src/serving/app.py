@@ -1,13 +1,23 @@
 """FastAPI application for real-time financial fraud risk scoring."""
 
+import secrets
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from typing import Any, AsyncGenerator, Dict, Optional
 
-from fastapi import BackgroundTasks, FastAPI, Header, HTTPException, Request, status
+from fastapi import (
+    BackgroundTasks,
+    Depends,
+    FastAPI,
+    Header,
+    HTTPException,
+    Request,
+    status,
+)
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
+import src.common.config as config_module
 from src.common.db import db_manager
 from src.common.logging import get_logger
 from src.serving.metrics import metrics_tracker
@@ -154,18 +164,50 @@ async def get_metrics() -> MetricsResponse:
     return metrics_tracker.get_metrics()
 
 
+def verify_admin_key(
+    x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key"),
+) -> None:
+    """Verify administrative API key using constant-time comparison.
+
+    In production (or whenever ADMIN_API_KEY is configured), enforces X-Admin-Key validation.
+    In development mode without ADMIN_API_KEY, allows operation with an audit log warning.
+    """
+    admin_key = config_module.settings.ADMIN_API_KEY
+    is_prod = config_module.settings.ENV.lower() in ("production", "prod")
+
+    if is_prod and not admin_key:
+        logger.error("ADMIN_API_KEY must be configured in production!")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Server security misconfiguration: ADMIN_API_KEY not set",
+        )
+
+    if admin_key:
+        if not x_admin_key or not secrets.compare_digest(x_admin_key, admin_key):
+            logger.warning("Unauthorized administrative access attempt.")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Unauthorized: Missing or invalid X-Admin-Key header",
+            )
+    elif is_prod:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Unauthorized: Admin access disabled without API key",
+        )
+    else:
+        logger.warning(
+            "Administrative operation invoked without ADMIN_API_KEY configured (dev-only)."
+        )
+
+
 @app.post(
     "/admin/reload-model",
     status_code=status.HTTP_200_OK,
-    summary="Reload model and preprocessor from latest champion (admin/dev-only)",
+    summary="Reload model and preprocessor from latest champion (admin-only)",
+    dependencies=[Depends(verify_admin_key)],
 )
-async def reload_model(
-    x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key"),
-) -> Dict[str, Any]:
-    """Reload the registered champion model and preprocessor without service restart.
-
-    Protected in production via X-Admin-Key header; accessible in development.
-    """
+async def reload_model() -> Dict[str, Any]:
+    """Reload the registered champion model and preprocessor without service restart."""
     try:
         scoring_engine.reload()
         return {
@@ -179,5 +221,31 @@ async def reload_model(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Model reload failed: {e}",
+        )
+
+
+@app.post(
+    "/admin/retrain",
+    status_code=status.HTTP_200_OK,
+    summary="Trigger model retraining condition check (admin-only)",
+    dependencies=[Depends(verify_admin_key)],
+)
+async def trigger_retrain() -> Dict[str, Any]:
+    """Manually trigger retraining evaluation conditions (drift & analyst labels)."""
+    try:
+        from src.monitoring.retrain_trigger import check_retrain_trigger
+
+        status_result = check_retrain_trigger()
+        return {
+            "status": "evaluated",
+            "trigger_fired": status_result.get("trigger_fired", False),
+            "reason": status_result.get("reason", "unknown"),
+            "evaluated_at": datetime.now(timezone.utc).isoformat(),
+        }
+    except Exception as e:
+        logger.error("Failed to evaluate retrain trigger: %s", e)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Retrain trigger evaluation failed: {e}",
         )
 

@@ -154,6 +154,11 @@ def test_list_alerts_filters():
     assert len(confirmed_alerts) == 1
     assert confirmed_alerts[0]["txn_id"] == "txn_alert_001"
 
+    # Lower score transaction (0.002) is retrievable when min_score is lowered
+    all_scores = list_alerts(min_score=0.0)
+    assert len(all_scores) == 3
+    assert any(a["txn_id"] == "txn_low_003" for a in all_scores)
+
 
 def test_acceptance_feedback_loop():
     """Acceptance test: Prove full 8-step feedback lifecycle from alert triage to retraining dataset.

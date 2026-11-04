@@ -178,6 +178,72 @@ def test_retraining_dataset_zero_leakage_enforcement(tmp_path):
             )
 
 
+def test_retraining_dataset_merges_safe_labels(tmp_path):
+    """Verifies that prepare_retraining_dataset updates existing labels and appends new labeled records."""
+    from src.training.data import ALL_FEATURE_COLUMNS
+
+    gate_df = pd.DataFrame({"txn_id": ["TX_GATE_999"]})
+
+    # Base training set has TX_1 (initially 0) and TX_2 (initially 1)
+    base_train = pd.DataFrame(
+        {
+            "txn_id": ["TX_1", "TX_2"],
+            "isFraud": [0, 1],
+            "type": ["PAYMENT", "TRANSFER"],
+            "amount": [100.0, 5000.0],
+            "oldbalanceOrg": [1000.0, 5000.0],
+            "oldbalanceDest": [0.0, 0.0],
+            "orig_txn_count_1h": [1, 2],
+            "orig_txn_count_24h": [1, 5],
+            "orig_amount_vs_mean": [1.0, 2.5],
+            "orig_time_since_last_txn": [3600.0, 120.0],
+            "orig_has_prev_txn": [1, 1],
+            "dest_txn_count_24h": [0, 1],
+            "dest_has_prev_txn": [0, 1],
+        }
+    )
+    base_train_path = tmp_path / "base_train.parquet"
+    base_train.to_parquet(base_train_path)
+
+    # Analyst confirms TX_1 was actually fraud (0 -> 1), and adds a new transaction TX_3 (fraud 1)
+    new_labels_df = pd.DataFrame(
+        {
+            "transaction_id": ["TX_1", "TX_3"],
+            "label": [1, 1],
+            "type": ["PAYMENT", "CASH_OUT"],
+            "amount": [100.0, 150000.0],
+            "oldbalanceOrg": [1000.0, 200000.0],
+            "oldbalanceDest": [0.0, 50000.0],
+            "orig_txn_count_1h": [1, 3],
+            "orig_txn_count_24h": [1, 10],
+            "orig_amount_vs_mean": [1.0, 4.0],
+            "orig_time_since_last_txn": [3600.0, 60.0],
+            "orig_has_prev_txn": [1, 1],
+            "dest_txn_count_24h": [0, 2],
+            "dest_has_prev_txn": [0, 1],
+        }
+    )
+
+    with patch("src.monitoring.retrain_trigger.get_labeled_cases", return_value=new_labels_df):
+        retrain_df, _ = prepare_retraining_dataset(
+            base_train_path=str(base_train_path),
+            frozen_gate_df=gate_df,
+        )
+
+        # Total rows must increase by 1 (TX_1 updated in place, TX_3 appended)
+        assert len(retrain_df) == 3
+        # TX_1 label must have updated from 0 to 1
+        tx1_label = retrain_df.loc[retrain_df["txn_id"] == "TX_1", "isFraud"].values[0]
+        assert tx1_label == 1
+        # TX_3 must be present with isFraud == 1
+        assert "TX_3" in retrain_df["txn_id"].values
+        tx3_label = retrain_df.loc[retrain_df["txn_id"] == "TX_3", "isFraud"].values[0]
+        assert tx3_label == 1
+        # Feature columns must be intact
+        for col in ALL_FEATURE_COLUMNS:
+            assert col in retrain_df.columns
+
+
 def test_promotion_gate_decision_promotion_and_rejection(tmp_path):
     """Tests honest promotion gate decisions for both promotion and rejection scenarios."""
     from src.common.config import settings

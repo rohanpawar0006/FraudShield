@@ -321,3 +321,46 @@ def test_openapi_schema_in_sync():
     )
 
 
+def test_admin_endpoint_security_unauthorized(test_client):
+    """Verify admin endpoints return 401 when ADMIN_API_KEY is configured and key is missing or invalid."""
+    import src.common.config as config_module
+
+    old_key = config_module.settings.ADMIN_API_KEY
+    object.__setattr__(config_module.settings, "ADMIN_API_KEY", "super-secret-key")
+    try:
+        # 1. Missing header
+        res1 = test_client.post("/admin/reload-model")
+        assert res1.status_code == 401
+        assert "Missing or invalid X-Admin-Key" in res1.json()["detail"]
+
+        res2 = test_client.post("/admin/retrain")
+        assert res2.status_code == 401
+        assert "Missing or invalid X-Admin-Key" in res2.json()["detail"]
+
+        # 2. Invalid header
+        res3 = test_client.post("/admin/reload-model", headers={"X-Admin-Key": "wrong-key"})
+        assert res3.status_code == 401
+
+        res4 = test_client.post("/admin/retrain", headers={"X-Admin-Key": "wrong-key"})
+        assert res4.status_code == 401
+    finally:
+        object.__setattr__(config_module.settings, "ADMIN_API_KEY", old_key)
+def test_admin_endpoint_security_authorized(test_client):
+    """Verify admin endpoints return 200 when valid X-Admin-Key is provided."""
+    import src.common.config as config_module
+
+    old_key = config_module.settings.ADMIN_API_KEY
+    object.__setattr__(config_module.settings, "ADMIN_API_KEY", "super-secret-key")
+    try:
+        res_reload = test_client.post("/admin/reload-model", headers={"X-Admin-Key": "super-secret-key"})
+        assert res_reload.status_code == 200
+        assert res_reload.json()["status"] == "reloaded"
+
+        res_retrain = test_client.post("/admin/retrain", headers={"X-Admin-Key": "super-secret-key"})
+        assert res_retrain.status_code == 200
+        data = res_retrain.json()
+        assert data["status"] == "evaluated"
+        assert "trigger_fired" in data
+    finally:
+        object.__setattr__(config_module.settings, "ADMIN_API_KEY", old_key)
+

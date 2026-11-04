@@ -120,7 +120,7 @@ class ScoringConsumer:
         self.channel.publish(self.dlq_topic, dlq_payload)
 
     def run(
-        self, limit: Optional[int] = None, timeout_sec: float = 2.0
+        self, limit: Optional[int] = None, timeout_sec: Optional[float] = None
     ) -> Dict[str, Any]:
         """Consume and process incoming messages up to optional limit."""
         logger.info(
@@ -204,6 +204,12 @@ def main() -> None:
         action="store_true",
         help="Force in-memory queue fallback without requiring Docker/Kafka",
     )
+    parser.add_argument(
+        "--timeout-sec",
+        type=float,
+        default=None,
+        help="Timeout in seconds for consumer idle exit (None to wait indefinitely)",
+    )
 
     args = parser.parse_args()
 
@@ -216,7 +222,7 @@ def main() -> None:
     )
 
     try:
-        consumer.run(limit=args.limit)
+        consumer.run(limit=args.limit, timeout_sec=args.timeout_sec)
     except KeyboardInterrupt:
         logger.info("Consumer interrupted by user.")
     except Exception as e:

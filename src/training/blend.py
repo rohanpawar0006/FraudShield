@@ -65,11 +65,12 @@ class GNNRiskLookup:
 def compute_blend_score(
     xgb_score: float,
     gnn_score: Optional[float],
-    alpha: float = 0.85,
+    alpha: float = 1.0,
 ) -> Tuple[float, bool]:
     """Compute blended fraud score S_blend = alpha * S_xgb + (1 - alpha) * S_gnn.
 
-    If gnn_score is None or NaN, falls back to XGBoost score (blend_used=False).
+    If gnn_score is None or NaN, or if alpha >= 1.0 (XGBoost-only configuration),
+    falls back strictly to XGBoost score with blend_used=False.
 
     Args:
         xgb_score: Raw XGBoost probability in [0, 1].
@@ -79,11 +80,10 @@ def compute_blend_score(
     Returns:
         Tuple of (blended_score, blend_used).
     """
-    if gnn_score is None or np.isnan(gnn_score):
+    clamped_alpha = max(0.0, min(1.0, float(alpha)))
+    if gnn_score is None or np.isnan(gnn_score) or clamped_alpha >= 1.0:
         return float(xgb_score), False
 
-    # Bound alpha between 0 and 1
-    clamped_alpha = max(0.0, min(1.0, float(alpha)))
     blended = clamped_alpha * float(xgb_score) + (1.0 - clamped_alpha) * float(gnn_score)
     # Ensure result is bounded in [0, 1]
     blended = max(0.0, min(1.0, blended))

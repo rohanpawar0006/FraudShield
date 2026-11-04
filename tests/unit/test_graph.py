@@ -127,3 +127,93 @@ def test_threshold_consistency():
     assert scoring_engine.decision_threshold == settings.DECISION_THRESHOLD
     assert settings.BLEND_DECISION_THRESHOLD == settings.DECISION_THRESHOLD
     assert settings.BLEND_ALPHA == 1.0
+
+
+def test_blend_alpha_one_results_in_xgboost_only_predictions():
+    """Verify that when BLEND_ALPHA=1.0, predictions are strictly XGBoost-only with blend_used=False."""
+    xgb_score = 0.82
+
+    # High GNN score (0.99) with alpha=1.0 must not shift score or trigger blend
+    score_high_gnn, used_high = compute_blend_score(xgb_score=xgb_score, gnn_score=0.99, alpha=1.0)
+    assert score_high_gnn == xgb_score
+    assert used_high is False
+
+    # Low GNN score (0.01) with alpha=1.0 must not dilute score or trigger blend
+    score_low_gnn, used_low = compute_blend_score(xgb_score=xgb_score, gnn_score=0.01, alpha=1.0)
+    assert score_low_gnn == xgb_score
+    assert used_low is False
+
+
+def test_gnn_scores_cannot_alter_predictions_in_xgboost_only_config(monkeypatch):
+    """Verify that in XGBoost-only config (BLEND_ALPHA=1.0), GNN risk scores cannot alter final fraud scores or alerts."""
+    from src.serving.schemas import TransactionPayload
+    from src.serving.scoring import scoring_engine
+
+    txn = TransactionPayload(
+        txn_id="gnn_invariance_test_001",
+        step=400,
+        type="TRANSFER",
+        amount=100000.0,
+        nameOrig="C111222333",
+        oldbalanceOrg=100000.0,
+        nameDest="C999888777",
+        oldbalanceDest=0.0,
+    )
+
+    # Mock GNN lookup to return 0.999
+    monkeypatch.setattr(scoring_engine.gnn_lookup, "get_score", lambda orig, dest: 0.999)
+    resp_high_gnn = scoring_engine.score(txn)
+
+    # Mock GNN lookup to return 0.001
+    monkeypatch.setattr(scoring_engine.gnn_lookup, "get_score", lambda orig, dest: 0.001)
+    resp_low_gnn = scoring_engine.score(txn)
+
+    # Final fraud scores and alert decisions must be identical bit-for-bit
+    assert resp_high_gnn.fraud_score == resp_low_gnn.fraud_score
+    assert resp_high_gnn.is_alert == resp_low_gnn.is_alert
+    assert resp_high_gnn.blend_used is False
+    assert resp_low_gnn.blend_used is False
+    # GNN scores remain captured for telemetry/audit visibility
+    assert resp_high_gnn.gnn_score == 0.999
+    assert resp_low_gnn.gnn_score == 0.001
+
+
+def test_warm_and_cold_account_scoring_behavior():
+    """Verify warm accounts capture GNN scores and cold accounts handle missing embeddings cleanly."""
+    from src.serving.schemas import TransactionPayload
+    from src.serving.scoring import scoring_engine
+
+    # 1. Warm account test (pick known account from lookup if populated)
+    if scoring_engine.gnn_lookup is not None and len(scoring_engine.gnn_lookup) > 0:
+        known_acc = next(iter(scoring_engine.gnn_lookup.lookup.keys()))
+        warm_txn = TransactionPayload(
+            txn_id="warm_acc_001",
+            step=400,
+            type="TRANSFER",
+            amount=50000.0,
+            nameOrig=known_acc,
+            oldbalanceOrg=50000.0,
+            nameDest="C_UNKNOWN_DEST",
+            oldbalanceDest=0.0,
+        )
+        warm_resp = scoring_engine.score(warm_txn)
+        assert warm_resp.gnn_score is not None
+        assert 0.0 <= warm_resp.gnn_score <= 1.0
+        assert warm_resp.blend_used is False  # Because BLEND_ALPHA == 1.0
+        assert warm_resp.fraud_score == warm_resp.xgb_score
+
+    # 2. Cold account test (completely unseen origin and dest)
+    cold_txn = TransactionPayload(
+        txn_id="cold_acc_001",
+        step=400,
+        type="PAYMENT",
+        amount=50.0,
+        nameOrig="C_COMPLETELY_UNSEEN_ORIGIN_99999",
+        oldbalanceOrg=100.0,
+        nameDest="M_COMPLETELY_UNSEEN_DEST_99999",
+        oldbalanceDest=0.0,
+    )
+    cold_resp = scoring_engine.score(cold_txn)
+    assert cold_resp.gnn_score is None
+    assert cold_resp.blend_used is False
+    assert cold_resp.fraud_score == cold_resp.xgb_score

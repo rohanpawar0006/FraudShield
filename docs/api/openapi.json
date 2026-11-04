@@ -85,8 +85,8 @@
     },
     "/admin/reload-model": {
       "post": {
-        "summary": "Reload model and preprocessor from latest champion (admin/dev-only)",
-        "description": "Reload the registered champion model and preprocessor without service restart.\n\nProtected in production via X-Admin-Key header; accessible in development.",
+        "summary": "Reload model and preprocessor from latest champion (admin-only)",
+        "description": "Reload the registered champion model and preprocessor without service restart.",
         "operationId": "reload_model_admin_reload_model_post",
         "parameters": [
           {
@@ -115,6 +115,55 @@
                   "type": "object",
                   "additionalProperties": true,
                   "title": "Response Reload Model Admin Reload Model Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/retrain": {
+      "post": {
+        "summary": "Trigger model retraining condition check (admin-only)",
+        "description": "Manually trigger retraining evaluation conditions (drift & analyst labels).",
+        "operationId": "trigger_retrain_admin_retrain_post",
+        "parameters": [
+          {
+            "name": "X-Admin-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Trigger Retrain Admin Retrain Post"
                 }
               }
             }

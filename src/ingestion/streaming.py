@@ -96,19 +96,21 @@ class KafkaStreamingChannel(StreamingChannel):
             return False
 
     def consume(
-        self, topic: str, timeout_sec: float = 1.0
+        self, topic: str, timeout_sec: Optional[float] = 1.0
     ) -> Generator[Dict[str, Any], None, None]:
         from kafka import KafkaConsumer
 
-        consumer = KafkaConsumer(
-            topic,
-            bootstrap_servers=self.bootstrap_servers,
-            auto_offset_reset="earliest",
-            enable_auto_commit=True,
-            group_id=settings.KAFKA_CONSUMER_GROUP,
-            value_deserializer=lambda x: json.loads(x.decode("utf-8")),
-            consumer_timeout_ms=int(timeout_sec * 1000),
-        )
+        kwargs: Dict[str, Any] = {
+            "bootstrap_servers": self.bootstrap_servers,
+            "auto_offset_reset": "earliest",
+            "enable_auto_commit": True,
+            "group_id": settings.KAFKA_CONSUMER_GROUP,
+            "value_deserializer": lambda x: json.loads(x.decode("utf-8")),
+        }
+        if timeout_sec is not None and timeout_sec > 0:
+            kwargs["consumer_timeout_ms"] = int(timeout_sec * 1000)
+
+        consumer = KafkaConsumer(topic, **kwargs)
         self.consumer_instance = consumer
         try:
             for message in consumer:
@@ -135,7 +137,7 @@ def get_streaming_channel(
     """Return a streaming channel, falling back gracefully to MemoryStreamingChannel if Kafka is offline."""
     servers = bootstrap_servers or settings.KAFKA_BOOTSTRAP_SERVERS
 
-    if force_fallback or settings.KAFKA_USE_FALLBACK:
+    if force_fallback or getattr(settings, "KAFKA_USE_FALLBACK", False):
         logger.info("Using MemoryStreamingChannel fallback (Docker-free mode).")
         return _shared_memory_channel
 

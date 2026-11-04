@@ -185,3 +185,86 @@ def test_kubernetes_probes_configured():
     assert "readinessProbe:" in dashboard_manifest
     assert "livenessProbe:" in dashboard_manifest
     assert "path: /_stcore/health" in dashboard_manifest
+
+
+def test_kubernetes_manifest_validation_workflow_configured():
+    """Verify GitHub Actions CI workflow configures valid, pinned kubeconform manifest validation."""
+    workflow_path = Path(".github/workflows/containers.yml")
+    assert workflow_path.exists(), "containers.yml workflow file must exist"
+
+    content = workflow_path.read_text(encoding="utf-8")
+
+    # 1. Ensure the validation job exists
+    assert "kubernetes-manifest-validation:" in content
+    assert "k8s/*.yaml" in content
+
+    # 2. Verify invalid GitHub Action reference was removed
+    assert "kubeconform-action" not in content, (
+        "containers.yml must not reference unmaintained or invalid kubeconform-action"
+    )
+
+    # 3. Verify pinned kubeconform binary installation and execution
+    assert "KUBECONFORM_VERSION:" in content
+    assert "https://github.com/yannh/kubeconform/releases/download/" in content
+    assert "./kubeconform -summary" in content
+
+
+def test_postgres_kubernetes_initialization_configured():
+    """Verify k8s/03-postgres.yaml configures ConfigMap DDL mounting to /docker-entrypoint-initdb.d."""
+    manifest_path = Path("k8s/03-postgres.yaml")
+    assert manifest_path.exists(), "k8s/03-postgres.yaml must exist"
+
+    with open(manifest_path, encoding="utf-8") as f:
+        docs = list(yaml.safe_load_all(f))
+
+    configmaps = [d for d in docs if d.get("kind") == "ConfigMap"]
+    statefulsets = [d for d in docs if d.get("kind") == "StatefulSet"]
+
+    assert len(configmaps) >= 1, "k8s/03-postgres.yaml must declare ConfigMap for database initialization"
+    cm = next(c for c in configmaps if c["metadata"]["name"] == "postgres-init-config")
+    init_sql = cm["data"]["init.sql"]
+    assert "CREATE TABLE IF NOT EXISTS transactions" in init_sql
+    assert "CREATE TABLE IF NOT EXISTS scores" in init_sql
+    assert "CREATE TABLE IF NOT EXISTS cases" in init_sql
+    assert "CREATE TABLE IF NOT EXISTS labels" in init_sql
+
+    assert len(statefulsets) >= 1, "k8s/03-postgres.yaml must declare PostgreSQL StatefulSet"
+    ss = statefulsets[0]
+    container = ss["spec"]["template"]["spec"]["containers"][0]
+    mounts = {m["name"]: m["mountPath"] for m in container["volumeMounts"]}
+    assert "postgres-init" in mounts, "StatefulSet must mount postgres-init volume"
+    assert mounts["postgres-init"] == "/docker-entrypoint-initdb.d"
+
+    volumes = {v["name"]: v for v in ss["spec"]["template"]["spec"]["volumes"]}
+    assert "postgres-init" in volumes
+    assert volumes["postgres-init"]["configMap"]["name"] == "postgres-init-config"
+
+
+def test_admin_api_key_secret_injection_configured():
+    """Verify ADMIN_API_KEY is configured in Kubernetes secrets, serving manifest, and compose."""
+    # 1. k8s/02-secrets.yaml declares ADMIN_API_KEY
+    secrets_path = Path("k8s/02-secrets.yaml")
+    with open(secrets_path, encoding="utf-8") as f:
+        secret_doc = yaml.safe_load(f)
+    assert "ADMIN_API_KEY" in secret_doc["stringData"]
+
+    # 2. k8s/05-serving.yaml injects ADMIN_API_KEY from secret
+    serving_path = Path("k8s/05-serving.yaml")
+    with open(serving_path, encoding="utf-8") as f:
+        serving_docs = list(yaml.safe_load_all(f))
+    deployment = next(d for d in serving_docs if d.get("kind") == "Deployment")
+    container = deployment["spec"]["template"]["spec"]["containers"][0]
+    env_vars = {
+        e["name"]: e.get("valueFrom", {}).get("secretKeyRef", {})
+        for e in container.get("env", [])
+    }
+    assert "ADMIN_API_KEY" in env_vars
+    assert env_vars["ADMIN_API_KEY"]["name"] == "fraudshield-secrets"
+    assert env_vars["ADMIN_API_KEY"]["key"] == "ADMIN_API_KEY"
+
+    # 3. docker/docker-compose.yml references ADMIN_API_KEY
+    compose_path = Path("docker/docker-compose.yml")
+    with open(compose_path, encoding="utf-8") as f:
+        compose_data = yaml.safe_load(f)
+    serving_env = compose_data["services"]["serving"]["environment"]
+    assert any("ADMIN_API_KEY=" in e for e in serving_env)

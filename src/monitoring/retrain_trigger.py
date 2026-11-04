@@ -26,8 +26,10 @@ from mlflow.tracking import MlflowClient  # noqa: E402
 from sklearn.metrics import average_precision_score, precision_score, recall_score  # noqa: E402
 
 from src.common.config import settings  # noqa: E402
+from src.common.db import db_manager  # noqa: E402
 from src.common.logging import get_logger  # noqa: E402
 from src.feedback.service import get_labeled_cases  # noqa: E402
+from src.serving.scoring import DEFAULT_FEATURE_VALUES  # noqa: E402
 from src.training.data import ALL_FEATURE_COLUMNS, create_preprocessor  # noqa: E402
 
 logger = get_logger(__name__)
@@ -104,8 +106,11 @@ def prepare_retraining_dataset(
     # Fetch verified analyst labels from feedback loop
     labeled_cases_df = get_labeled_cases()
     if not labeled_cases_df.empty:
-        # Check for leakage
-        leakage_overlap = set(labeled_cases_df["transaction_id"].astype(str)).intersection(gate_txn_ids)
+        id_col = "transaction_id" if "transaction_id" in labeled_cases_df.columns else "txn_id"
+        lbl_col = "label" if "label" in labeled_cases_df.columns else "analyst_label"
+
+        # Check for leakage against frozen evaluation gate set
+        leakage_overlap = set(labeled_cases_df[id_col].astype(str)).intersection(gate_txn_ids)
         if leakage_overlap:
             raise ValueError(
                 f"LEAKAGE VIOLATION: {len(leakage_overlap)} gate-set transaction IDs found in analyst labels! "
@@ -113,11 +118,93 @@ def prepare_retraining_dataset(
             )
 
         # Exclude gate set ids defensively
-        safe_labels = labeled_cases_df[~labeled_cases_df["transaction_id"].astype(str).isin(gate_txn_ids)]
+        safe_labels = labeled_cases_df[~labeled_cases_df[id_col].astype(str).isin(gate_txn_ids)].copy()
         logger.info(
             "Incorporating %d verified analyst labels into retraining pool (0 gate set overlap)",
             len(safe_labels),
         )
+
+        if not safe_labels.empty:
+            label_map = dict(zip(safe_labels[id_col].astype(str), safe_labels[lbl_col].astype(int)))
+
+            # 1. In-place update for existing training transactions
+            if "txn_id" in df_train.columns:
+                overlap_mask = df_train["txn_id"].astype(str).isin(label_map.keys())
+                if overlap_mask.any():
+                    df_train.loc[overlap_mask, "isFraud"] = df_train.loc[overlap_mask, "txn_id"].astype(str).map(label_map)
+                    logger.info("Updated isFraud labels for %d existing training transactions", int(overlap_mask.sum()))
+
+            # 2. Append new labeled transactions not yet in df_train
+            existing_ids = set(df_train["txn_id"].astype(str)) if "txn_id" in df_train.columns else set()
+            new_labels = safe_labels[~safe_labels[id_col].astype(str).isin(existing_ids)]
+
+            if not new_labels.empty:
+                new_records = []
+                new_ids = list(new_labels[id_col].astype(str))
+
+                # Direct features in safe_labels (e.g. test fixtures)
+                has_direct_features = any(c in new_labels.columns for c in ALL_FEATURE_COLUMNS)
+                if has_direct_features:
+                    for _, row in new_labels.iterrows():
+                        rec = {}
+                        for c in ALL_FEATURE_COLUMNS:
+                            rec[c] = row[c] if c in row and pd.notna(row[c]) else DEFAULT_FEATURE_VALUES.get(c, 0.0)
+                        rec["isFraud"] = int(row[lbl_col])
+                        if "txn_id" in df_train.columns:
+                            rec["txn_id"] = str(row[id_col])
+                        new_records.append(rec)
+                elif db_manager.is_reachable():
+                    # Query database transactions table
+                    try:
+                        conn = db_manager.get_connection()
+                        ph = "%s" if db_manager.backend == "postgresql" else "?"
+                        placeholders = ",".join([ph] * len(new_ids))
+                        cur = conn.cursor()
+                        cur.execute(
+                            f"SELECT txn_id, raw, type, amount FROM transactions WHERE txn_id IN ({placeholders})",
+                            tuple(new_ids),
+                        )
+                        db_rows = cur.fetchall()
+                        conn.close()
+
+                        for r in db_rows:
+                            tid = str(r[0] if not hasattr(r, "keys") else r["txn_id"])
+                            raw_val = r[1] if not hasattr(r, "keys") else r["raw"]
+                            raw_payload = {}
+                            if isinstance(raw_val, str):
+                                try:
+                                    raw_payload = json.loads(raw_val)
+                                except Exception:
+                                    raw_payload = {}
+                            elif isinstance(raw_val, dict):
+                                raw_payload = raw_val
+
+                            rec = {}
+                            for col in ALL_FEATURE_COLUMNS:
+                                if col in raw_payload:
+                                    rec[col] = raw_payload[col]
+                                elif col == "type":
+                                    rec[col] = r[2] if not hasattr(r, "keys") else r["type"]
+                                elif col == "amount":
+                                    rec[col] = float(r[3]) if not hasattr(r, "keys") else float(r["amount"])
+                                else:
+                                    rec[col] = DEFAULT_FEATURE_VALUES.get(col, 0.0)
+
+                            rec["isFraud"] = label_map.get(tid, 0)
+                            if "txn_id" in df_train.columns:
+                                rec["txn_id"] = tid
+                            new_records.append(rec)
+                    except Exception as db_err:
+                        logger.warning("Could not query database transactions for retraining labels: %s", db_err)
+
+                if new_records:
+                    new_df = pd.DataFrame(new_records)
+                    df_train = pd.concat([df_train, new_df], ignore_index=True)
+                    logger.info(
+                        "Successfully merged %d newly labeled transactions into df_train (total rows: %d)",
+                        len(new_records),
+                        len(df_train),
+                    )
 
     return df_train, gate_df
 
@@ -453,6 +540,8 @@ def evaluate_promotion_gate(
 def main():
     parser = argparse.ArgumentParser(description="Evaluate retraining trigger and execute gated retraining.")
     parser.add_argument("--force", action="store_true", help="Force retraining execution regardless of trigger state")
+    parser.add_argument("--check-drift", action="store_true", default=True, help="Evaluate data drift in trigger condition")
+    parser.add_argument("--check-labels", action="store_true", default=True, help="Evaluate analyst feedback label count in trigger condition")
     parser.add_argument("--min-labels", type=int, default=settings.MIN_NEW_LABELS_FOR_RETRAIN, help="Label threshold")
     parser.add_argument("--min-delta", type=float, default=settings.MIN_IMPROVEMENT_PR_AUC, help="Min PR-AUC improvement")
     args = parser.parse_args()
