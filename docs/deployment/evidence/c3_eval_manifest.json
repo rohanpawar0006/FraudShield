@@ -1,0 +1,2002 @@
+[
+  {
+    "idx": 0,
+    "txn_id": "c3_eval_0000",
+    "step": 379,
+    "type": "CASH_IN",
+    "amount": 173999.32,
+    "nameOrig": "C71038679",
+    "nameDest": "C724342072",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 1,
+    "txn_id": "c3_eval_0001",
+    "step": 379,
+    "type": "CASH_OUT",
+    "amount": 321010.04,
+    "nameOrig": "C659490953",
+    "nameDest": "C1162187045",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 2,
+    "txn_id": "c3_eval_0002",
+    "step": 379,
+    "type": "CASH_OUT",
+    "amount": 313695.92,
+    "nameOrig": "C2110127605",
+    "nameDest": "C747829774",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 3,
+    "txn_id": "c3_eval_0003",
+    "step": 379,
+    "type": "PAYMENT",
+    "amount": 1033.24,
+    "nameOrig": "C363461665",
+    "nameDest": "M1984264603",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 4,
+    "txn_id": "c3_eval_0004",
+    "step": 379,
+    "type": "CASH_IN",
+    "amount": 44533.36,
+    "nameOrig": "C1824955853",
+    "nameDest": "C1244415532",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 5,
+    "txn_id": "c3_eval_0005",
+    "step": 379,
+    "type": "CASH_IN",
+    "amount": 29146.82,
+    "nameOrig": "C275637142",
+    "nameDest": "C404756832",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 6,
+    "txn_id": "c3_eval_0006",
+    "step": 379,
+    "type": "CASH_OUT",
+    "amount": 9117.68,
+    "nameOrig": "C52696454",
+    "nameDest": "C1946800057",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 7,
+    "txn_id": "c3_eval_0007",
+    "step": 379,
+    "type": "PAYMENT",
+    "amount": 12211.93,
+    "nameOrig": "C1423333118",
+    "nameDest": "M1326036772",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 8,
+    "txn_id": "c3_eval_0008",
+    "step": 379,
+    "type": "PAYMENT",
+    "amount": 3881.96,
+    "nameOrig": "C1882587245",
+    "nameDest": "M1965782546",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 9,
+    "txn_id": "c3_eval_0009",
+    "step": 380,
+    "type": "CASH_IN",
+    "amount": 8966.89,
+    "nameOrig": "C780091395",
+    "nameDest": "C1525171486",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 10,
+    "txn_id": "c3_eval_0010",
+    "step": 380,
+    "type": "CASH_OUT",
+    "amount": 105217.42,
+    "nameOrig": "C1675729841",
+    "nameDest": "C1309029243",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 11,
+    "txn_id": "c3_eval_0011",
+    "step": 381,
+    "type": "CASH_OUT",
+    "amount": 184993.34,
+    "nameOrig": "C198248727",
+    "nameDest": "C1445095889",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 12,
+    "txn_id": "c3_eval_0012",
+    "step": 381,
+    "type": "PAYMENT",
+    "amount": 5113.97,
+    "nameOrig": "C68491315",
+    "nameDest": "M1615122040",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 13,
+    "txn_id": "c3_eval_0013",
+    "step": 381,
+    "type": "TRANSFER",
+    "amount": 998145.11,
+    "nameOrig": "C177454078",
+    "nameDest": "C1071830249",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 14,
+    "txn_id": "c3_eval_0014",
+    "step": 382,
+    "type": "PAYMENT",
+    "amount": 4694.48,
+    "nameOrig": "C397383198",
+    "nameDest": "M1096845225",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 15,
+    "txn_id": "c3_eval_0015",
+    "step": 382,
+    "type": "PAYMENT",
+    "amount": 9467.38,
+    "nameOrig": "C1889083387",
+    "nameDest": "M1544600615",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 16,
+    "txn_id": "c3_eval_0016",
+    "step": 386,
+    "type": "CASH_OUT",
+    "amount": 258090.46,
+    "nameOrig": "C613846256",
+    "nameDest": "C23234645",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 17,
+    "txn_id": "c3_eval_0017",
+    "step": 393,
+    "type": "CASH_OUT",
+    "amount": 154180.01,
+    "nameOrig": "C576553455",
+    "nameDest": "C1631202784",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 18,
+    "txn_id": "c3_eval_0018",
+    "step": 393,
+    "type": "PAYMENT",
+    "amount": 63967.6,
+    "nameOrig": "C1188963472",
+    "nameDest": "M742913019",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 19,
+    "txn_id": "c3_eval_0019",
+    "step": 393,
+    "type": "CASH_OUT",
+    "amount": 367568.02,
+    "nameOrig": "C866107810",
+    "nameDest": "C1137137941",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 20,
+    "txn_id": "c3_eval_0020",
+    "step": 394,
+    "type": "CASH_IN",
+    "amount": 162652.98,
+    "nameOrig": "C2080342396",
+    "nameDest": "C1933098289",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 21,
+    "txn_id": "c3_eval_0021",
+    "step": 394,
+    "type": "CASH_OUT",
+    "amount": 127375.37,
+    "nameOrig": "C1239027147",
+    "nameDest": "C295266452",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 22,
+    "txn_id": "c3_eval_0022",
+    "step": 394,
+    "type": "PAYMENT",
+    "amount": 54704.34,
+    "nameOrig": "C433128773",
+    "nameDest": "M367498419",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 23,
+    "txn_id": "c3_eval_0023",
+    "step": 394,
+    "type": "CASH_OUT",
+    "amount": 613535.58,
+    "nameOrig": "C549362717",
+    "nameDest": "C850305389",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 24,
+    "txn_id": "c3_eval_0024",
+    "step": 394,
+    "type": "PAYMENT",
+    "amount": 1163.92,
+    "nameOrig": "C234577353",
+    "nameDest": "M1754475155",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 25,
+    "txn_id": "c3_eval_0025",
+    "step": 394,
+    "type": "CASH_IN",
+    "amount": 79528.04,
+    "nameOrig": "C1269951583",
+    "nameDest": "C2107582184",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 26,
+    "txn_id": "c3_eval_0026",
+    "step": 395,
+    "type": "PAYMENT",
+    "amount": 1203.27,
+    "nameOrig": "C1408220708",
+    "nameDest": "M911105237",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 27,
+    "txn_id": "c3_eval_0027",
+    "step": 395,
+    "type": "PAYMENT",
+    "amount": 14152.84,
+    "nameOrig": "C215729819",
+    "nameDest": "M779257326",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 28,
+    "txn_id": "c3_eval_0028",
+    "step": 395,
+    "type": "PAYMENT",
+    "amount": 24942.37,
+    "nameOrig": "C768364339",
+    "nameDest": "M396600675",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 29,
+    "txn_id": "c3_eval_0029",
+    "step": 395,
+    "type": "PAYMENT",
+    "amount": 8916.82,
+    "nameOrig": "C1284008041",
+    "nameDest": "M907283615",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 30,
+    "txn_id": "c3_eval_0030",
+    "step": 395,
+    "type": "TRANSFER",
+    "amount": 561753.58,
+    "nameOrig": "C94683110",
+    "nameDest": "C993635374",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 31,
+    "txn_id": "c3_eval_0031",
+    "step": 395,
+    "type": "CASH_IN",
+    "amount": 127804.37,
+    "nameOrig": "C1945148852",
+    "nameDest": "C981952816",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 32,
+    "txn_id": "c3_eval_0032",
+    "step": 395,
+    "type": "TRANSFER",
+    "amount": 756386.98,
+    "nameOrig": "C965285838",
+    "nameDest": "C66507909",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 33,
+    "txn_id": "c3_eval_0033",
+    "step": 395,
+    "type": "PAYMENT",
+    "amount": 18422.95,
+    "nameOrig": "C315222386",
+    "nameDest": "M155157623",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 34,
+    "txn_id": "c3_eval_0034",
+    "step": 395,
+    "type": "PAYMENT",
+    "amount": 16383.58,
+    "nameOrig": "C709325763",
+    "nameDest": "M1545208457",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 35,
+    "txn_id": "c3_eval_0035",
+    "step": 395,
+    "type": "TRANSFER",
+    "amount": 32451.13,
+    "nameOrig": "C1943476132",
+    "nameDest": "C697291998",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 36,
+    "txn_id": "c3_eval_0036",
+    "step": 396,
+    "type": "CASH_OUT",
+    "amount": 70734.08,
+    "nameOrig": "C1268230621",
+    "nameDest": "C283967577",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 37,
+    "txn_id": "c3_eval_0037",
+    "step": 396,
+    "type": "CASH_OUT",
+    "amount": 255186.22,
+    "nameOrig": "C1375025499",
+    "nameDest": "C950647072",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 38,
+    "txn_id": "c3_eval_0038",
+    "step": 396,
+    "type": "PAYMENT",
+    "amount": 28845.08,
+    "nameOrig": "C1234918738",
+    "nameDest": "M1729899818",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 39,
+    "txn_id": "c3_eval_0039",
+    "step": 396,
+    "type": "CASH_OUT",
+    "amount": 66721.72,
+    "nameOrig": "C1423296098",
+    "nameDest": "C460812546",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 40,
+    "txn_id": "c3_eval_0040",
+    "step": 396,
+    "type": "CASH_IN",
+    "amount": 371064.09,
+    "nameOrig": "C190630888",
+    "nameDest": "C1822770283",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 41,
+    "txn_id": "c3_eval_0041",
+    "step": 396,
+    "type": "PAYMENT",
+    "amount": 82297.1,
+    "nameOrig": "C1736484274",
+    "nameDest": "M1489677515",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 42,
+    "txn_id": "c3_eval_0042",
+    "step": 396,
+    "type": "PAYMENT",
+    "amount": 2354.63,
+    "nameOrig": "C1767723561",
+    "nameDest": "M496331605",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 43,
+    "txn_id": "c3_eval_0043",
+    "step": 396,
+    "type": "PAYMENT",
+    "amount": 12265.23,
+    "nameOrig": "C814605997",
+    "nameDest": "M2116747122",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 44,
+    "txn_id": "c3_eval_0044",
+    "step": 397,
+    "type": "PAYMENT",
+    "amount": 11356.14,
+    "nameOrig": "C1431204018",
+    "nameDest": "M2147276543",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 45,
+    "txn_id": "c3_eval_0045",
+    "step": 397,
+    "type": "CASH_OUT",
+    "amount": 74829.09,
+    "nameOrig": "C24153303",
+    "nameDest": "C1539345691",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 46,
+    "txn_id": "c3_eval_0046",
+    "step": 397,
+    "type": "CASH_OUT",
+    "amount": 393829.38,
+    "nameOrig": "C1120891835",
+    "nameDest": "C1336334300",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 47,
+    "txn_id": "c3_eval_0047",
+    "step": 397,
+    "type": "PAYMENT",
+    "amount": 1719.57,
+    "nameOrig": "C749320562",
+    "nameDest": "M1397664729",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 48,
+    "txn_id": "c3_eval_0048",
+    "step": 398,
+    "type": "PAYMENT",
+    "amount": 26202.11,
+    "nameOrig": "C463565575",
+    "nameDest": "M938693569",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 49,
+    "txn_id": "c3_eval_0049",
+    "step": 398,
+    "type": "CASH_OUT",
+    "amount": 264540.69,
+    "nameOrig": "C1240576022",
+    "nameDest": "C2104286483",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 50,
+    "txn_id": "c3_eval_0050",
+    "step": 398,
+    "type": "CASH_OUT",
+    "amount": 638388.67,
+    "nameOrig": "C748705319",
+    "nameDest": "C799401518",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 51,
+    "txn_id": "c3_eval_0051",
+    "step": 398,
+    "type": "CASH_OUT",
+    "amount": 222304.85,
+    "nameOrig": "C1540670727",
+    "nameDest": "C82692792",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 52,
+    "txn_id": "c3_eval_0052",
+    "step": 398,
+    "type": "CASH_OUT",
+    "amount": 261845.02,
+    "nameOrig": "C1030324829",
+    "nameDest": "C1905611312",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 53,
+    "txn_id": "c3_eval_0053",
+    "step": 399,
+    "type": "CASH_OUT",
+    "amount": 237033.39,
+    "nameOrig": "C1335234858",
+    "nameDest": "C573026411",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 54,
+    "txn_id": "c3_eval_0054",
+    "step": 399,
+    "type": "CASH_OUT",
+    "amount": 225470.47,
+    "nameOrig": "C1562362321",
+    "nameDest": "C1251910075",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 55,
+    "txn_id": "c3_eval_0055",
+    "step": 399,
+    "type": "CASH_IN",
+    "amount": 18310.78,
+    "nameOrig": "C1796275960",
+    "nameDest": "C20884538",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 56,
+    "txn_id": "c3_eval_0056",
+    "step": 399,
+    "type": "PAYMENT",
+    "amount": 9609.67,
+    "nameOrig": "C2020592533",
+    "nameDest": "M26935516",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 57,
+    "txn_id": "c3_eval_0057",
+    "step": 399,
+    "type": "CASH_IN",
+    "amount": 303547.01,
+    "nameOrig": "C480855342",
+    "nameDest": "C570280468",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 58,
+    "txn_id": "c3_eval_0058",
+    "step": 399,
+    "type": "CASH_OUT",
+    "amount": 255081.23,
+    "nameOrig": "C1602821268",
+    "nameDest": "C1530952958",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 59,
+    "txn_id": "c3_eval_0059",
+    "step": 399,
+    "type": "CASH_OUT",
+    "amount": 42831.26,
+    "nameOrig": "C528479767",
+    "nameDest": "C603612748",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 60,
+    "txn_id": "c3_eval_0060",
+    "step": 399,
+    "type": "PAYMENT",
+    "amount": 24655.48,
+    "nameOrig": "C1243804478",
+    "nameDest": "M272511955",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 61,
+    "txn_id": "c3_eval_0061",
+    "step": 399,
+    "type": "CASH_OUT",
+    "amount": 73425.61,
+    "nameOrig": "C62944090",
+    "nameDest": "C197351805",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 62,
+    "txn_id": "c3_eval_0062",
+    "step": 399,
+    "type": "CASH_IN",
+    "amount": 294075.84,
+    "nameOrig": "C664049728",
+    "nameDest": "C1184884965",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 63,
+    "txn_id": "c3_eval_0063",
+    "step": 400,
+    "type": "TRANSFER",
+    "amount": 171706.91,
+    "nameOrig": "C970660049",
+    "nameDest": "C1496460638",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 64,
+    "txn_id": "c3_eval_0064",
+    "step": 400,
+    "type": "PAYMENT",
+    "amount": 8093.66,
+    "nameOrig": "C287373143",
+    "nameDest": "M155595820",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 65,
+    "txn_id": "c3_eval_0065",
+    "step": 400,
+    "type": "PAYMENT",
+    "amount": 313.87,
+    "nameOrig": "C257485606",
+    "nameDest": "M641226732",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 66,
+    "txn_id": "c3_eval_0066",
+    "step": 400,
+    "type": "TRANSFER",
+    "amount": 521790.51,
+    "nameOrig": "C701419604",
+    "nameDest": "C1970478153",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 67,
+    "txn_id": "c3_eval_0067",
+    "step": 400,
+    "type": "CASH_OUT",
+    "amount": 168883.11,
+    "nameOrig": "C698784545",
+    "nameDest": "C40066806",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 68,
+    "txn_id": "c3_eval_0068",
+    "step": 400,
+    "type": "PAYMENT",
+    "amount": 60641.75,
+    "nameOrig": "C965059550",
+    "nameDest": "M1221349332",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 69,
+    "txn_id": "c3_eval_0069",
+    "step": 400,
+    "type": "PAYMENT",
+    "amount": 11729.26,
+    "nameOrig": "C904249607",
+    "nameDest": "M900944265",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 70,
+    "txn_id": "c3_eval_0070",
+    "step": 400,
+    "type": "CASH_OUT",
+    "amount": 184725.9,
+    "nameOrig": "C1802317940",
+    "nameDest": "C301151866",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 71,
+    "txn_id": "c3_eval_0071",
+    "step": 400,
+    "type": "TRANSFER",
+    "amount": 559040.66,
+    "nameOrig": "C1436599897",
+    "nameDest": "C2032326516",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 72,
+    "txn_id": "c3_eval_0072",
+    "step": 401,
+    "type": "CASH_IN",
+    "amount": 229095.79,
+    "nameOrig": "C1299348619",
+    "nameDest": "C1118640134",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 73,
+    "txn_id": "c3_eval_0073",
+    "step": 401,
+    "type": "PAYMENT",
+    "amount": 17279.89,
+    "nameOrig": "C267290676",
+    "nameDest": "M1433808447",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 74,
+    "txn_id": "c3_eval_0074",
+    "step": 401,
+    "type": "CASH_IN",
+    "amount": 172897.22,
+    "nameOrig": "C1033433339",
+    "nameDest": "C1366630392",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 75,
+    "txn_id": "c3_eval_0075",
+    "step": 401,
+    "type": "TRANSFER",
+    "amount": 1147872.84,
+    "nameOrig": "C1374207106",
+    "nameDest": "C2024686167",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 76,
+    "txn_id": "c3_eval_0076",
+    "step": 401,
+    "type": "CASH_OUT",
+    "amount": 206240.05,
+    "nameOrig": "C1973117305",
+    "nameDest": "C1201923337",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 77,
+    "txn_id": "c3_eval_0077",
+    "step": 401,
+    "type": "PAYMENT",
+    "amount": 4802.81,
+    "nameOrig": "C1886814663",
+    "nameDest": "M1565652466",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 78,
+    "txn_id": "c3_eval_0078",
+    "step": 401,
+    "type": "TRANSFER",
+    "amount": 450400.91,
+    "nameOrig": "C997725387",
+    "nameDest": "C2062216532",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 79,
+    "txn_id": "c3_eval_0079",
+    "step": 401,
+    "type": "PAYMENT",
+    "amount": 17119.27,
+    "nameOrig": "C341991059",
+    "nameDest": "M1141748016",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 80,
+    "txn_id": "c3_eval_0080",
+    "step": 401,
+    "type": "CASH_IN",
+    "amount": 539360.28,
+    "nameOrig": "C1677950130",
+    "nameDest": "C1138547831",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 81,
+    "txn_id": "c3_eval_0081",
+    "step": 401,
+    "type": "PAYMENT",
+    "amount": 11199.37,
+    "nameOrig": "C1689211832",
+    "nameDest": "M1241490100",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 82,
+    "txn_id": "c3_eval_0082",
+    "step": 402,
+    "type": "CASH_OUT",
+    "amount": 60591.57,
+    "nameOrig": "C850174864",
+    "nameDest": "C1606016614",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 83,
+    "txn_id": "c3_eval_0083",
+    "step": 402,
+    "type": "CASH_OUT",
+    "amount": 105826.63,
+    "nameOrig": "C102612898",
+    "nameDest": "C1242364124",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 84,
+    "txn_id": "c3_eval_0084",
+    "step": 402,
+    "type": "CASH_IN",
+    "amount": 27206.92,
+    "nameOrig": "C922200026",
+    "nameDest": "C1156832388",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 85,
+    "txn_id": "c3_eval_0085",
+    "step": 402,
+    "type": "CASH_OUT",
+    "amount": 98679.88,
+    "nameOrig": "C1040511984",
+    "nameDest": "C1836074926",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 86,
+    "txn_id": "c3_eval_0086",
+    "step": 402,
+    "type": "CASH_IN",
+    "amount": 88365.61,
+    "nameOrig": "C2069226863",
+    "nameDest": "C372763607",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 87,
+    "txn_id": "c3_eval_0087",
+    "step": 402,
+    "type": "CASH_OUT",
+    "amount": 190952.38,
+    "nameOrig": "C1576871324",
+    "nameDest": "C1271205504",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 88,
+    "txn_id": "c3_eval_0088",
+    "step": 402,
+    "type": "CASH_IN",
+    "amount": 75094.56,
+    "nameOrig": "C250078941",
+    "nameDest": "C715368293",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 89,
+    "txn_id": "c3_eval_0089",
+    "step": 402,
+    "type": "TRANSFER",
+    "amount": 1317076.35,
+    "nameOrig": "C236870906",
+    "nameDest": "C1778117782",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 90,
+    "txn_id": "c3_eval_0090",
+    "step": 402,
+    "type": "CASH_IN",
+    "amount": 41153.14,
+    "nameOrig": "C1122313738",
+    "nameDest": "C531214211",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 91,
+    "txn_id": "c3_eval_0091",
+    "step": 402,
+    "type": "PAYMENT",
+    "amount": 21376.91,
+    "nameOrig": "C1811382563",
+    "nameDest": "M1901266329",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 92,
+    "txn_id": "c3_eval_0092",
+    "step": 402,
+    "type": "CASH_OUT",
+    "amount": 40549.54,
+    "nameOrig": "C149758430",
+    "nameDest": "C1352679657",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 93,
+    "txn_id": "c3_eval_0093",
+    "step": 402,
+    "type": "CASH_OUT",
+    "amount": 70343.12,
+    "nameOrig": "C347346920",
+    "nameDest": "C126292021",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 94,
+    "txn_id": "c3_eval_0094",
+    "step": 403,
+    "type": "PAYMENT",
+    "amount": 21118.19,
+    "nameOrig": "C2022997581",
+    "nameDest": "M176904443",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 95,
+    "txn_id": "c3_eval_0095",
+    "step": 403,
+    "type": "CASH_IN",
+    "amount": 128619.91,
+    "nameOrig": "C1549534876",
+    "nameDest": "C523560850",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 96,
+    "txn_id": "c3_eval_0096",
+    "step": 403,
+    "type": "CASH_OUT",
+    "amount": 41268.4,
+    "nameOrig": "C561391739",
+    "nameDest": "C262800984",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 97,
+    "txn_id": "c3_eval_0097",
+    "step": 403,
+    "type": "CASH_OUT",
+    "amount": 224512.47,
+    "nameOrig": "C1031305291",
+    "nameDest": "C1806723877",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 98,
+    "txn_id": "c3_eval_0098",
+    "step": 403,
+    "type": "CASH_OUT",
+    "amount": 183188.69,
+    "nameOrig": "C49344972",
+    "nameDest": "C1286029445",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 99,
+    "txn_id": "c3_eval_0099",
+    "step": 403,
+    "type": "CASH_OUT",
+    "amount": 150117.61,
+    "nameOrig": "C1379969108",
+    "nameDest": "C1824271315",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 100,
+    "txn_id": "c3_eval_0100",
+    "step": 403,
+    "type": "CASH_IN",
+    "amount": 473281.76,
+    "nameOrig": "C998814907",
+    "nameDest": "C1352952869",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 101,
+    "txn_id": "c3_eval_0101",
+    "step": 403,
+    "type": "CASH_OUT",
+    "amount": 80997.76,
+    "nameOrig": "C1969344851",
+    "nameDest": "C1374398135",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 102,
+    "txn_id": "c3_eval_0102",
+    "step": 403,
+    "type": "CASH_OUT",
+    "amount": 144265.58,
+    "nameOrig": "C1368737583",
+    "nameDest": "C1322691734",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 103,
+    "txn_id": "c3_eval_0103",
+    "step": 403,
+    "type": "CASH_OUT",
+    "amount": 48383.5,
+    "nameOrig": "C364280523",
+    "nameDest": "C1955089166",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 104,
+    "txn_id": "c3_eval_0104",
+    "step": 404,
+    "type": "CASH_OUT",
+    "amount": 595346.11,
+    "nameOrig": "C1467789795",
+    "nameDest": "C1910740102",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 105,
+    "txn_id": "c3_eval_0105",
+    "step": 404,
+    "type": "CASH_IN",
+    "amount": 142503.68,
+    "nameOrig": "C1855809415",
+    "nameDest": "C11443850",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 106,
+    "txn_id": "c3_eval_0106",
+    "step": 404,
+    "type": "TRANSFER",
+    "amount": 1410860.71,
+    "nameOrig": "C2099626529",
+    "nameDest": "C2036456346",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 107,
+    "txn_id": "c3_eval_0107",
+    "step": 404,
+    "type": "CASH_OUT",
+    "amount": 46997.2,
+    "nameOrig": "C753112726",
+    "nameDest": "C312078738",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 108,
+    "txn_id": "c3_eval_0108",
+    "step": 404,
+    "type": "PAYMENT",
+    "amount": 13491.55,
+    "nameOrig": "C323281424",
+    "nameDest": "M750668925",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 109,
+    "txn_id": "c3_eval_0109",
+    "step": 404,
+    "type": "PAYMENT",
+    "amount": 686.12,
+    "nameOrig": "C961127035",
+    "nameDest": "M1237677764",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 110,
+    "txn_id": "c3_eval_0110",
+    "step": 404,
+    "type": "CASH_OUT",
+    "amount": 86577.16,
+    "nameOrig": "C1560012017",
+    "nameDest": "C624122709",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 111,
+    "txn_id": "c3_eval_0111",
+    "step": 404,
+    "type": "PAYMENT",
+    "amount": 18292.75,
+    "nameOrig": "C1072045269",
+    "nameDest": "M406890462",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 112,
+    "txn_id": "c3_eval_0112",
+    "step": 405,
+    "type": "CASH_IN",
+    "amount": 35940.94,
+    "nameOrig": "C1703651173",
+    "nameDest": "C964352236",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 113,
+    "txn_id": "c3_eval_0113",
+    "step": 405,
+    "type": "CASH_OUT",
+    "amount": 42615.61,
+    "nameOrig": "C379382292",
+    "nameDest": "C1172772405",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 114,
+    "txn_id": "c3_eval_0114",
+    "step": 405,
+    "type": "TRANSFER",
+    "amount": 370295.27,
+    "nameOrig": "C1184067234",
+    "nameDest": "C194390789",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 115,
+    "txn_id": "c3_eval_0115",
+    "step": 405,
+    "type": "CASH_OUT",
+    "amount": 62961.0,
+    "nameOrig": "C934231262",
+    "nameDest": "C1226773272",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 116,
+    "txn_id": "c3_eval_0116",
+    "step": 406,
+    "type": "PAYMENT",
+    "amount": 1737.1,
+    "nameOrig": "C746691961",
+    "nameDest": "M2079129583",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 117,
+    "txn_id": "c3_eval_0117",
+    "step": 406,
+    "type": "CASH_IN",
+    "amount": 163793.15,
+    "nameOrig": "C843315772",
+    "nameDest": "C23666209",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 118,
+    "txn_id": "c3_eval_0118",
+    "step": 407,
+    "type": "DEBIT",
+    "amount": 3224.23,
+    "nameOrig": "C1107222564",
+    "nameDest": "C1813982145",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 119,
+    "txn_id": "c3_eval_0119",
+    "step": 407,
+    "type": "CASH_OUT",
+    "amount": 148252.67,
+    "nameOrig": "C70876008",
+    "nameDest": "C310383504",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 120,
+    "txn_id": "c3_eval_0120",
+    "step": 407,
+    "type": "PAYMENT",
+    "amount": 27074.76,
+    "nameOrig": "C985532509",
+    "nameDest": "M804750295",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 121,
+    "txn_id": "c3_eval_0121",
+    "step": 408,
+    "type": "DEBIT",
+    "amount": 2735.97,
+    "nameOrig": "C1367690782",
+    "nameDest": "C41607922",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 122,
+    "txn_id": "c3_eval_0122",
+    "step": 408,
+    "type": "CASH_OUT",
+    "amount": 319984.94,
+    "nameOrig": "C1310929946",
+    "nameDest": "C1204944624",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 123,
+    "txn_id": "c3_eval_0123",
+    "step": 420,
+    "type": "PAYMENT",
+    "amount": 4506.88,
+    "nameOrig": "C1710149265",
+    "nameDest": "M820112465",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 124,
+    "txn_id": "c3_eval_0124",
+    "step": 426,
+    "type": "CASH_IN",
+    "amount": 142058.48,
+    "nameOrig": "C638862898",
+    "nameDest": "C713399792",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 125,
+    "txn_id": "c3_eval_0125",
+    "step": 428,
+    "type": "PAYMENT",
+    "amount": 2464.5,
+    "nameOrig": "C1631719260",
+    "nameDest": "M1942048324",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 126,
+    "txn_id": "c3_eval_0126",
+    "step": 442,
+    "type": "CASH_OUT",
+    "amount": 9065.34,
+    "nameOrig": "C1906628282",
+    "nameDest": "C120759853",
+    "ground_truth_label": 1
+  },
+  {
+    "idx": 127,
+    "txn_id": "c3_eval_0127",
+    "step": 449,
+    "type": "CASH_OUT",
+    "amount": 133632.24,
+    "nameOrig": "C782460784",
+    "nameDest": "C260277833",
+    "ground_truth_label": 1
+  },
+  {
+    "idx": 128,
+    "txn_id": "c3_eval_0128",
+    "step": 451,
+    "type": "CASH_OUT",
+    "amount": 95005.52,
+    "nameOrig": "C647761017",
+    "nameDest": "C1212306887",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 129,
+    "txn_id": "c3_eval_0129",
+    "step": 458,
+    "type": "CASH_OUT",
+    "amount": 289822.59,
+    "nameOrig": "C1662475405",
+    "nameDest": "C711872033",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 130,
+    "txn_id": "c3_eval_0130",
+    "step": 466,
+    "type": "CASH_OUT",
+    "amount": 64369.92,
+    "nameOrig": "C243970637",
+    "nameDest": "C755068788",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 131,
+    "txn_id": "c3_eval_0131",
+    "step": 469,
+    "type": "CASH_OUT",
+    "amount": 4417191.86,
+    "nameOrig": "C790582807",
+    "nameDest": "C690378183",
+    "ground_truth_label": 1
+  },
+  {
+    "idx": 132,
+    "txn_id": "c3_eval_0132",
+    "step": 469,
+    "type": "PAYMENT",
+    "amount": 3235.13,
+    "nameOrig": "C368699195",
+    "nameDest": "M1466697293",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 133,
+    "txn_id": "c3_eval_0133",
+    "step": 476,
+    "type": "CASH_OUT",
+    "amount": 185085.85,
+    "nameOrig": "C421854767",
+    "nameDest": "C1596361698",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 134,
+    "txn_id": "c3_eval_0134",
+    "step": 483,
+    "type": "CASH_IN",
+    "amount": 181427.36,
+    "nameOrig": "C963691482",
+    "nameDest": "C1992371900",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 135,
+    "txn_id": "c3_eval_0135",
+    "step": 495,
+    "type": "CASH_IN",
+    "amount": 347667.86,
+    "nameOrig": "C998179561",
+    "nameDest": "C959160265",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 136,
+    "txn_id": "c3_eval_0136",
+    "step": 500,
+    "type": "TRANSFER",
+    "amount": 445661.0,
+    "nameOrig": "C553968455",
+    "nameDest": "C954538353",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 137,
+    "txn_id": "c3_eval_0137",
+    "step": 500,
+    "type": "CASH_OUT",
+    "amount": 113037.41,
+    "nameOrig": "C1254252960",
+    "nameDest": "C1181773130",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 138,
+    "txn_id": "c3_eval_0138",
+    "step": 503,
+    "type": "PAYMENT",
+    "amount": 1018.13,
+    "nameOrig": "C139644929",
+    "nameDest": "M1762398445",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 139,
+    "txn_id": "c3_eval_0139",
+    "step": 512,
+    "type": "CASH_OUT",
+    "amount": 1319703.76,
+    "nameOrig": "C213706912",
+    "nameDest": "C961243143",
+    "ground_truth_label": 1
+  },
+  {
+    "idx": 140,
+    "txn_id": "c3_eval_0140",
+    "step": 517,
+    "type": "CASH_OUT",
+    "amount": 135669.22,
+    "nameOrig": "C1277880068",
+    "nameDest": "C1919764866",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 141,
+    "txn_id": "c3_eval_0141",
+    "step": 518,
+    "type": "CASH_OUT",
+    "amount": 209014.35,
+    "nameOrig": "C1400650150",
+    "nameDest": "C1752397449",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 142,
+    "txn_id": "c3_eval_0142",
+    "step": 520,
+    "type": "CASH_IN",
+    "amount": 137363.56,
+    "nameOrig": "C1765875798",
+    "nameDest": "C376288041",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 143,
+    "txn_id": "c3_eval_0143",
+    "step": 521,
+    "type": "TRANSFER",
+    "amount": 157277.0,
+    "nameOrig": "C1601578028",
+    "nameDest": "C49314331",
+    "ground_truth_label": 1
+  },
+  {
+    "idx": 144,
+    "txn_id": "c3_eval_0144",
+    "step": 522,
+    "type": "CASH_IN",
+    "amount": 259182.15,
+    "nameOrig": "C113911400",
+    "nameDest": "C669904384",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 145,
+    "txn_id": "c3_eval_0145",
+    "step": 522,
+    "type": "PAYMENT",
+    "amount": 2838.59,
+    "nameOrig": "C608764994",
+    "nameDest": "M1021075618",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 146,
+    "txn_id": "c3_eval_0146",
+    "step": 522,
+    "type": "PAYMENT",
+    "amount": 11404.84,
+    "nameOrig": "C1122677172",
+    "nameDest": "M1534952409",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 147,
+    "txn_id": "c3_eval_0147",
+    "step": 522,
+    "type": "CASH_OUT",
+    "amount": 233110.8,
+    "nameOrig": "C1064362955",
+    "nameDest": "C865106826",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 148,
+    "txn_id": "c3_eval_0148",
+    "step": 522,
+    "type": "PAYMENT",
+    "amount": 16374.44,
+    "nameOrig": "C488418403",
+    "nameDest": "M1052756911",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 149,
+    "txn_id": "c3_eval_0149",
+    "step": 522,
+    "type": "DEBIT",
+    "amount": 4193.07,
+    "nameOrig": "C1375346264",
+    "nameDest": "C747920986",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 150,
+    "txn_id": "c3_eval_0150",
+    "step": 524,
+    "type": "PAYMENT",
+    "amount": 3349.47,
+    "nameOrig": "C298002247",
+    "nameDest": "M2052091817",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 151,
+    "txn_id": "c3_eval_0151",
+    "step": 525,
+    "type": "CASH_IN",
+    "amount": 78541.48,
+    "nameOrig": "C570061358",
+    "nameDest": "C795029366",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 152,
+    "txn_id": "c3_eval_0152",
+    "step": 538,
+    "type": "PAYMENT",
+    "amount": 58323.79,
+    "nameOrig": "C1095631322",
+    "nameDest": "M347720320",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 153,
+    "txn_id": "c3_eval_0153",
+    "step": 540,
+    "type": "PAYMENT",
+    "amount": 3397.7,
+    "nameOrig": "C1008711958",
+    "nameDest": "M1647122218",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 154,
+    "txn_id": "c3_eval_0154",
+    "step": 540,
+    "type": "PAYMENT",
+    "amount": 8168.34,
+    "nameOrig": "C1859417466",
+    "nameDest": "M1259524172",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 155,
+    "txn_id": "c3_eval_0155",
+    "step": 542,
+    "type": "PAYMENT",
+    "amount": 3819.07,
+    "nameOrig": "C2003040056",
+    "nameDest": "M200573219",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 156,
+    "txn_id": "c3_eval_0156",
+    "step": 544,
+    "type": "TRANSFER",
+    "amount": 480454.61,
+    "nameOrig": "C1637571513",
+    "nameDest": "C212894846",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 157,
+    "txn_id": "c3_eval_0157",
+    "step": 544,
+    "type": "CASH_IN",
+    "amount": 30135.82,
+    "nameOrig": "C1774365232",
+    "nameDest": "C765980478",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 158,
+    "txn_id": "c3_eval_0158",
+    "step": 546,
+    "type": "PAYMENT",
+    "amount": 12503.52,
+    "nameOrig": "C326514212",
+    "nameDest": "M577340573",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 159,
+    "txn_id": "c3_eval_0159",
+    "step": 548,
+    "type": "CASH_OUT",
+    "amount": 182581.03,
+    "nameOrig": "C737217122",
+    "nameDest": "C1859166375",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 160,
+    "txn_id": "c3_eval_0160",
+    "step": 548,
+    "type": "PAYMENT",
+    "amount": 2135.77,
+    "nameOrig": "C759289014",
+    "nameDest": "M800805205",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 161,
+    "txn_id": "c3_eval_0161",
+    "step": 563,
+    "type": "TRANSFER",
+    "amount": 190662.7,
+    "nameOrig": "C1569153511",
+    "nameDest": "C1637089162",
+    "ground_truth_label": 1
+  },
+  {
+    "idx": 162,
+    "txn_id": "c3_eval_0162",
+    "step": 565,
+    "type": "CASH_OUT",
+    "amount": 106877.39,
+    "nameOrig": "C1585801434",
+    "nameDest": "C927196698",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 163,
+    "txn_id": "c3_eval_0163",
+    "step": 567,
+    "type": "PAYMENT",
+    "amount": 19639.98,
+    "nameOrig": "C1059635786",
+    "nameDest": "M334540595",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 164,
+    "txn_id": "c3_eval_0164",
+    "step": 569,
+    "type": "CASH_OUT",
+    "amount": 176626.77,
+    "nameOrig": "C2077002700",
+    "nameDest": "C1412132938",
+    "ground_truth_label": 1
+  },
+  {
+    "idx": 165,
+    "txn_id": "c3_eval_0165",
+    "step": 570,
+    "type": "PAYMENT",
+    "amount": 14498.31,
+    "nameOrig": "C425051403",
+    "nameDest": "M1996924311",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 166,
+    "txn_id": "c3_eval_0166",
+    "step": 582,
+    "type": "PAYMENT",
+    "amount": 12127.37,
+    "nameOrig": "C580823714",
+    "nameDest": "M1140651840",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 167,
+    "txn_id": "c3_eval_0167",
+    "step": 590,
+    "type": "PAYMENT",
+    "amount": 11586.71,
+    "nameOrig": "C1962646845",
+    "nameDest": "M1201897069",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 168,
+    "txn_id": "c3_eval_0168",
+    "step": 590,
+    "type": "PAYMENT",
+    "amount": 5234.05,
+    "nameOrig": "C1780806514",
+    "nameDest": "M977466691",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 169,
+    "txn_id": "c3_eval_0169",
+    "step": 590,
+    "type": "TRANSFER",
+    "amount": 1763400.37,
+    "nameOrig": "C2039012025",
+    "nameDest": "C1053550938",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 170,
+    "txn_id": "c3_eval_0170",
+    "step": 594,
+    "type": "CASH_OUT",
+    "amount": 2133.81,
+    "nameOrig": "C1507340554",
+    "nameDest": "C1013002049",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 171,
+    "txn_id": "c3_eval_0171",
+    "step": 594,
+    "type": "TRANSFER",
+    "amount": 1207081.83,
+    "nameOrig": "C1316199096",
+    "nameDest": "C1482681499",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 172,
+    "txn_id": "c3_eval_0172",
+    "step": 595,
+    "type": "PAYMENT",
+    "amount": 6078.74,
+    "nameOrig": "C2133421010",
+    "nameDest": "M2145069938",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 173,
+    "txn_id": "c3_eval_0173",
+    "step": 595,
+    "type": "CASH_OUT",
+    "amount": 271075.4,
+    "nameOrig": "C1322044795",
+    "nameDest": "C479942561",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 174,
+    "txn_id": "c3_eval_0174",
+    "step": 596,
+    "type": "PAYMENT",
+    "amount": 13228.78,
+    "nameOrig": "C1886917721",
+    "nameDest": "M1051338930",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 175,
+    "txn_id": "c3_eval_0175",
+    "step": 596,
+    "type": "CASH_IN",
+    "amount": 104976.82,
+    "nameOrig": "C706745126",
+    "nameDest": "C663548282",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 176,
+    "txn_id": "c3_eval_0176",
+    "step": 596,
+    "type": "PAYMENT",
+    "amount": 11209.61,
+    "nameOrig": "C1211598967",
+    "nameDest": "M553929383",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 177,
+    "txn_id": "c3_eval_0177",
+    "step": 596,
+    "type": "CASH_IN",
+    "amount": 156916.85,
+    "nameOrig": "C1724988868",
+    "nameDest": "C1936786489",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 178,
+    "txn_id": "c3_eval_0178",
+    "step": 610,
+    "type": "PAYMENT",
+    "amount": 6123.77,
+    "nameOrig": "C1769489398",
+    "nameDest": "M676327389",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 179,
+    "txn_id": "c3_eval_0179",
+    "step": 612,
+    "type": "CASH_OUT",
+    "amount": 160044.74,
+    "nameOrig": "C342943904",
+    "nameDest": "C852530355",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 180,
+    "txn_id": "c3_eval_0180",
+    "step": 612,
+    "type": "PAYMENT",
+    "amount": 11993.66,
+    "nameOrig": "C2099690120",
+    "nameDest": "M499602691",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 181,
+    "txn_id": "c3_eval_0181",
+    "step": 619,
+    "type": "CASH_OUT",
+    "amount": 165340.64,
+    "nameOrig": "C372488904",
+    "nameDest": "C1309830204",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 182,
+    "txn_id": "c3_eval_0182",
+    "step": 637,
+    "type": "CASH_IN",
+    "amount": 244904.82,
+    "nameOrig": "C806329724",
+    "nameDest": "C481805935",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 183,
+    "txn_id": "c3_eval_0183",
+    "step": 659,
+    "type": "PAYMENT",
+    "amount": 2235.11,
+    "nameOrig": "C1980752293",
+    "nameDest": "M1178072685",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 184,
+    "txn_id": "c3_eval_0184",
+    "step": 668,
+    "type": "TRANSFER",
+    "amount": 7539165.76,
+    "nameOrig": "C64015154",
+    "nameDest": "C1744865437",
+    "ground_truth_label": 1
+  },
+  {
+    "idx": 185,
+    "txn_id": "c3_eval_0185",
+    "step": 683,
+    "type": "CASH_OUT",
+    "amount": 414736.33,
+    "nameOrig": "C370950141",
+    "nameDest": "C285286790",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 186,
+    "txn_id": "c3_eval_0186",
+    "step": 686,
+    "type": "PAYMENT",
+    "amount": 4674.65,
+    "nameOrig": "C2001314958",
+    "nameDest": "M999870564",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 187,
+    "txn_id": "c3_eval_0187",
+    "step": 687,
+    "type": "CASH_IN",
+    "amount": 209539.55,
+    "nameOrig": "C2110910951",
+    "nameDest": "C1152857096",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 188,
+    "txn_id": "c3_eval_0188",
+    "step": 687,
+    "type": "CASH_IN",
+    "amount": 26037.87,
+    "nameOrig": "C965853507",
+    "nameDest": "C181132358",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 189,
+    "txn_id": "c3_eval_0189",
+    "step": 688,
+    "type": "TRANSFER",
+    "amount": 268979.72,
+    "nameOrig": "C804872371",
+    "nameDest": "C801559516",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 190,
+    "txn_id": "c3_eval_0190",
+    "step": 688,
+    "type": "CASH_OUT",
+    "amount": 389617.19,
+    "nameOrig": "C1182450229",
+    "nameDest": "C918157170",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 191,
+    "txn_id": "c3_eval_0191",
+    "step": 691,
+    "type": "CASH_OUT",
+    "amount": 91821.35,
+    "nameOrig": "C949489214",
+    "nameDest": "C757415583",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 192,
+    "txn_id": "c3_eval_0192",
+    "step": 691,
+    "type": "PAYMENT",
+    "amount": 10465.3,
+    "nameOrig": "C159862487",
+    "nameDest": "M1821889468",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 193,
+    "txn_id": "c3_eval_0193",
+    "step": 691,
+    "type": "PAYMENT",
+    "amount": 19819.64,
+    "nameOrig": "C759371985",
+    "nameDest": "M762981978",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 194,
+    "txn_id": "c3_eval_0194",
+    "step": 698,
+    "type": "TRANSFER",
+    "amount": 10000000.0,
+    "nameOrig": "C1729268548",
+    "nameDest": "C1519453344",
+    "ground_truth_label": 1
+  },
+  {
+    "idx": 195,
+    "txn_id": "c3_eval_0195",
+    "step": 705,
+    "type": "CASH_OUT",
+    "amount": 68032.48,
+    "nameOrig": "C433265903",
+    "nameDest": "C1776862512",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 196,
+    "txn_id": "c3_eval_0196",
+    "step": 709,
+    "type": "PAYMENT",
+    "amount": 852.72,
+    "nameOrig": "C1538410223",
+    "nameDest": "M1763036272",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 197,
+    "txn_id": "c3_eval_0197",
+    "step": 717,
+    "type": "PAYMENT",
+    "amount": 10351.01,
+    "nameOrig": "C604706672",
+    "nameDest": "M1164766168",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 198,
+    "txn_id": "c3_eval_0198",
+    "step": 717,
+    "type": "PAYMENT",
+    "amount": 5186.6,
+    "nameOrig": "C1444179488",
+    "nameDest": "M1138275374",
+    "ground_truth_label": 0
+  },
+  {
+    "idx": 199,
+    "txn_id": "c3_eval_0199",
+    "step": 733,
+    "type": "CASH_OUT",
+    "amount": 438859.1,
+    "nameOrig": "C1632082016",
+    "nameDest": "C1877779310",
+    "ground_truth_label": 1
+  }
+]
