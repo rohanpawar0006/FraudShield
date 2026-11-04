@@ -68,7 +68,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Validate Kubernetes Manifests with Kubeconform
+        env:
+          KUBECONFORM_VERSION: "v0.6.7"
         run: |
-          curl -sL https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz | tar xz
-          ./kubeconform -summary -ignore-missing-schemas k8s/*.yaml
-
+          curl -sL "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz" | tar xz
+          chmod +x ./kubeconform
+          ./kubeconform -summary -ignore-missing-schemas -schema-location default -schema-location 'https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/{{ .NormalizedKubernetesVersion }}-standalone{{ .StrictSuffix }}/{{ .ResourceKind }}{{ .KindSuffix }}.json' k8s/*.yaml

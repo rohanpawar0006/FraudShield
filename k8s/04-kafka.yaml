@@ -1,0 +1,165 @@
+# ==============================================================================
+# FraudShield Kafka Broker & Topic Initialization (KRaft Mode - Single Pod)
+# Designed for self-contained Kubernetes development, testing, and demo clusters.
+# For production, an external managed Kafka service (AWS MSK / Confluent) is recommended.
+# ==============================================================================
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kafka-pvc
+  namespace: fraudshield
+  labels:
+    app.kubernetes.io/name: kafka
+    app.kubernetes.io/part-of: fraudshield-platform
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+  namespace: fraudshield
+  labels:
+    app.kubernetes.io/name: kafka
+    app.kubernetes.io/part-of: fraudshield-platform
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9092
+      targetPort: 9092
+      name: client
+    - port: 29092
+      targetPort: 29092
+      name: internal
+  selector:
+    app.kubernetes.io/name: kafka
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka
+  namespace: fraudshield
+  labels:
+    app.kubernetes.io/name: kafka
+    app.kubernetes.io/part-of: fraudshield-platform
+spec:
+  serviceName: "kafka"
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kafka
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kafka
+    spec:
+      containers:
+        - name: kafka
+          image: confluentinc/cp-kafka:7.5.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9092
+              name: client
+            - containerPort: 29092
+              name: internal
+          env:
+            - name: KAFKA_NODE_ID
+              value: "1"
+            - name: KAFKA_PROCESS_ROLES
+              value: "broker,controller"
+            - name: KAFKA_LISTENERS
+              value: "PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:29093,PLAINTEXT_HOST://0.0.0.0:9092"
+            - name: KAFKA_ADVERTISED_LISTENERS
+              value: "PLAINTEXT://kafka:29092,PLAINTEXT_HOST://kafka:9092"
+            - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+              value: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT"
+            - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+              value: "1@kafka:29093"
+            - name: KAFKA_CONTROLLER_LISTENER_NAMES
+              value: "CONTROLLER"
+            - name: KAFKA_INTER_BROKER_LISTENER_NAME
+              value: "PLAINTEXT"
+            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+              value: "1"
+            - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+              value: "1"
+            - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
+              value: "1"
+            - name: KAFKA_LOG_DIRS
+              value: "/var/lib/kafka/data"
+            - name: CLUSTER_ID
+              value: "MkU3OEVBNTcwNTJENDM2Qk"
+          resources:
+            requests:
+              cpu: 150m
+              memory: 384Mi
+            limits:
+              cpu: 300m
+              memory: 768Mi
+          volumeMounts:
+            - name: kafka-storage
+              mountPath: /var/lib/kafka/data
+          readinessProbe:
+            tcpSocket:
+              port: 9092
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 3
+          livenessProbe:
+            tcpSocket:
+              port: 9092
+            initialDelaySeconds: 20
+            periodSeconds: 15
+            timeoutSeconds: 3
+      volumes:
+        - name: kafka-storage
+          persistentVolumeClaim:
+            claimName: kafka-pvc
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kafka-init-topics
+  namespace: fraudshield
+  labels:
+    app.kubernetes.io/name: kafka-init-topics
+    app.kubernetes.io/part-of: fraudshield-platform
+spec:
+  backoffLimit: 5
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kafka-init-topics
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: topic-creator
+          image: confluentinc/cp-kafka:7.5.0
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Waiting for Kafka broker readiness at kafka:9092..."
+              while ! nc -z kafka 9092; do
+                sleep 2
+              done
+              echo "Kafka is reachable. Creating FraudShield topics..."
+              kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic transactions --replication-factor 1 --partitions 3
+              kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic scores --replication-factor 1 --partitions 3
+              kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic transactions.dlq --replication-factor 1 --partitions 1
+              echo "Topics initialized successfully:"
+              kafka-topics --bootstrap-server kafka:9092 --list
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+

@@ -156,6 +156,7 @@ services:
       - FEAST_REPO_PATH=/app/feature_repo
       - MODEL_LOCAL_PATH=/app/models/xgboost_model.json
       - PREPROCESSOR_LOCAL_PATH=/app/models/xgboost_preprocessor.joblib
+      - ADMIN_API_KEY=${ADMIN_API_KEY:-}
     volumes:
       - ../data:/app/data:ro
       - ../models:/app/models:ro

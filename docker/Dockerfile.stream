@@ -51,5 +51,5 @@ RUN chown -R appuser:appgroup /app
 USER appuser:appgroup
 
 # Default entrypoint launches consumer; overridden in docker-compose for producer
-CMD ["python", "-m", "src.stream.consumer"]
+CMD ["python", "-m", "src.ingestion.consumer"]
 
